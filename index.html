@@ -1152,14 +1152,13 @@ async function showSessionResult(sessionId) {
 }
 
 function showResultModal(r) {
-  state.childName       = r.child_name  || "";
-  state.gender          = r.gender      || "";
-  state.examiner        = r.examiner    || "";
-  state.examDate        = r.exam_date   || "";
-  state._remoteAge      = r.child_age;
-  state.answers         = r.answers     || {};
-  state.birthYear       = ""; state.birthMonth = "";
-  state.currentSessionId = r.session_id || null;  // QR 공유에 필요
+  state.childName  = r.child_name  || "";
+  state.gender     = r.gender      || "";
+  state.examiner   = r.examiner    || "";
+  state.examDate   = r.exam_date   || "";
+  state._remoteAge = r.child_age;
+  state.answers    = r.answers     || {};
+  state.birthYear  = ""; state.birthMonth = "";
 
   const sc = calcScores();
   const rProfile = groupProfile("receptive");
@@ -1717,14 +1716,14 @@ function downloadPDF() {
         ? `<span style="font-size:8px;background:#fee2e2;color:#dc2626;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">자동불가</span>`
         : `<span style="font-size:8px;background:#dbeafe;color:#1d4ed8;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">직접체크</span>`;
       return `<tr style="border-bottom:1px solid #f1f5f9;background:${bg};">
-        <td style="padding:3px 8px;font-size:10px;font-weight:600;color:#334155;">${p.label}${autoTag}</td>
-        <td style="padding:3px 6px;text-align:center;font-size:10px;font-weight:700;color:#475569;">${p.passed}/${p.total}</td>
-        <td style="padding:3px 8px;">
-          <div style="display:flex;align-items:center;gap:4px;">
-            <div style="flex:1;height:5px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+        <td style="padding:5px 10px;font-size:11px;font-weight:600;color:#334155;">${p.label}${autoTag}</td>
+        <td style="padding:5px 8px;text-align:center;font-size:11px;font-weight:700;color:#475569;">${p.passed}/${p.total}</td>
+        <td style="padding:5px 10px;">
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="flex:1;height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
               <div style="width:${p.pct}%;height:100%;background:${c};border-radius:99px;"></div>
             </div>
-            <span style="font-weight:800;color:${c};font-size:9.5px;min-width:28px;">${p.pct}%</span>
+            <span style="font-weight:800;color:${c};font-size:10.5px;min-width:32px;">${p.pct}%</span>
           </div>
         </td>
       </tr>`;
@@ -1740,36 +1739,36 @@ function downloadPDF() {
     const c = interpColor[d.interp.cls];
     const bg = interpBg[d.interp.cls];
     return `
-    <div style="flex:1;border-radius:9px;border:1.5px solid ${c}50;background:${bg};padding:8px 10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="font-weight:800;font-size:11px;">${label}</span>
-        <span style="background:${c};color:white;border-radius:4px;padding:1px 7px;font-size:9px;font-weight:700;">${interpLabel[d.interp.cls]}</span>
+    <div style="flex:1;border-radius:10px;border:1.5px solid ${c}50;background:${bg};padding:10px 12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+        <span style="font-weight:800;font-size:12px;">${label}</span>
+        <span style="background:${c};color:white;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;">${interpLabel[d.interp.cls]}</span>
       </div>
-      <div style="display:flex;gap:4px;margin-bottom:5px;">
-        <div style="flex:1;text-align:center;background:rgba(255,255,255,0.7);border-radius:6px;padding:5px 3px;">
-          <div style="font-size:16px;font-weight:900;line-height:1;">${d.score}<span style="font-size:9px;color:#94a3b8;">/${d.total}</span></div>
-          <div style="font-size:8px;color:#64748b;margin-top:1px;">원점수</div>
+      <div style="display:flex;gap:5px;margin-bottom:7px;">
+        <div style="flex:1;text-align:center;background:rgba(255,255,255,0.7);border-radius:7px;padding:6px 4px;">
+          <div style="font-size:18px;font-weight:900;line-height:1;">${d.score}<span style="font-size:10px;color:#94a3b8;">/${d.total}</span></div>
+          <div style="font-size:9px;color:#64748b;margin-top:2px;">원점수</div>
         </div>
-        <div style="flex:1;text-align:center;background:rgba(255,255,255,0.7);border-radius:6px;padding:5px 3px;">
-          <div style="font-size:16px;font-weight:900;line-height:1;">${d.pct}<span style="font-size:9px;color:#94a3b8;">%</span></div>
-          <div style="font-size:8px;color:#64748b;margin-top:1px;">정반응률</div>
+        <div style="flex:1;text-align:center;background:rgba(255,255,255,0.7);border-radius:7px;padding:6px 4px;">
+          <div style="font-size:18px;font-weight:900;line-height:1;">${d.pct}<span style="font-size:10px;color:#94a3b8;">%</span></div>
+          <div style="font-size:9px;color:#64748b;margin-top:2px;">정반응률</div>
         </div>
-        <div style="flex:1;text-align:center;background:rgba(255,255,255,0.7);border-radius:6px;padding:5px 3px;">
-          <div style="font-size:16px;font-weight:900;line-height:1;color:${c};">${d.equiv}<span style="font-size:9px;color:#94a3b8;">개월</span></div>
-          <div style="font-size:8px;color:#64748b;margin-top:1px;">등가월령</div>
+        <div style="flex:1;text-align:center;background:rgba(255,255,255,0.7);border-radius:7px;padding:6px 4px;">
+          <div style="font-size:18px;font-weight:900;line-height:1;color:${c};">${d.equiv}<span style="font-size:10px;color:#94a3b8;">개월</span></div>
+          <div style="font-size:9px;color:#64748b;margin-top:2px;">등가월령</div>
         </div>
       </div>
-      <div style="height:4px;background:rgba(0,0,0,0.08);border-radius:99px;overflow:hidden;">
+      <div style="height:5px;background:rgba(0,0,0,0.08);border-radius:99px;overflow:hidden;">
         <div style="width:${d.pct}%;height:100%;background:${c};border-radius:99px;"></div>
       </div>
     </div>`;
   }
 
   const printHTML = `
-  <div style="font-family:'Noto Sans KR',sans-serif;width:730px;padding:14px 18px;color:#1e293b;box-sizing:border-box;">
+  <div style="font-family:'Noto Sans KR',sans-serif;width:750px;padding:20px 24px;color:#1e293b;box-sizing:border-box;">
 
     <!-- 헤더 -->
-    <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;border-radius:10px;padding:11px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;">
+    <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;border-radius:12px;padding:14px 20px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
       <div style="background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);border-radius:8px;padding:5px 14px;font-weight:900;font-size:19px;letter-spacing:3px;flex-shrink:0;">SELSI</div>
       <div>
         <div style="font-size:16px;font-weight:800;letter-spacing:-0.3px;">영·유아 언어발달 검사 결과지</div>
@@ -1781,12 +1780,12 @@ function downloadPDF() {
     </div>
 
     <!-- 아동 정보 + 점수 요약 -->
-    <div style="display:flex;gap:10px;margin-bottom:10px;align-items:stretch;">
+    <div style="display:flex;gap:12px;margin-bottom:14px;align-items:stretch;">
       <!-- 아동 정보 -->
-      <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 13px;flex:0 0 auto;min-width:180px;">
-        <div style="font-weight:800;font-size:10px;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">👶 아동 정보</div>
+      <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 16px;flex:0 0 auto;min-width:190px;">
+        <div style="font-weight:800;font-size:11px;color:#64748b;margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;">👶 아동 정보</div>
         ${[["이름",state.childName||"-"],["성별",state.gender||"-"],["생활연령",sc.age+"개월 ("+Math.floor(sc.age/12)+"세 "+sc.age%12+"개월)"]].map(([k,v])=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:3px;gap:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px;gap:8px;">
           <span style="color:#94a3b8;font-weight:600;white-space:nowrap;">${k}</span>
           <span style="font-weight:700;color:#1e293b;text-align:right;">${v}</span>
         </div>`).join("")}
@@ -1798,15 +1797,15 @@ function downloadPDF() {
     </div>
 
     <!-- 프로파일 테이블 2개 나란히 -->
-    <div style="display:flex;gap:10px;margin-bottom:10px;">
+    <div style="display:flex;gap:12px;margin-bottom:14px;">
       <!-- 수용언어 -->
       <div style="flex:1;">
         <div style="font-weight:800;font-size:11px;color:#1e293b;margin-bottom:6px;padding-left:2px;">🎧 수용언어 월령별 프로파일</div>
         <table style="width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:10px;overflow:hidden;border:1.5px solid #e2e8f0;">
           <thead><tr style="background:#f1f5f9;">
-            <th style="padding:4px 8px;text-align:left;font-weight:700;color:#475569;font-size:9.5px;">월령 구간</th>
-            <th style="padding:4px 6px;text-align:center;font-weight:700;color:#475569;font-size:9.5px;">통과</th>
-            <th style="padding:4px 8px;text-align:left;font-weight:700;color:#475569;font-size:9.5px;">정반응률</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">월령 구간</th>
+            <th style="padding:6px 8px;text-align:center;font-weight:700;color:#475569;font-size:10px;">통과</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">정반응률</th>
           </tr></thead>
           <tbody>${profileRows(rProfile)}</tbody>
         </table>
@@ -1816,9 +1815,9 @@ function downloadPDF() {
         <div style="font-weight:800;font-size:11px;color:#1e293b;margin-bottom:6px;padding-left:2px;">🗣️ 표현언어 월령별 프로파일</div>
         <table style="width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:10px;overflow:hidden;border:1.5px solid #e2e8f0;">
           <thead><tr style="background:#f1f5f9;">
-            <th style="padding:4px 8px;text-align:left;font-weight:700;color:#475569;font-size:9.5px;">월령 구간</th>
-            <th style="padding:4px 6px;text-align:center;font-weight:700;color:#475569;font-size:9.5px;">통과</th>
-            <th style="padding:4px 8px;text-align:left;font-weight:700;color:#475569;font-size:9.5px;">정반응률</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">월령 구간</th>
+            <th style="padding:6px 8px;text-align:center;font-weight:700;color:#475569;font-size:10px;">통과</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">정반응률</th>
           </tr></thead>
           <tbody>${profileRows(eProfile)}</tbody>
         </table>
@@ -1826,9 +1825,9 @@ function downloadPDF() {
     </div>
 
     <!-- 종합 소견 -->
-    <div style="background:#f8fafc;border-left:4px solid #2563eb;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:10px;">
-      <div style="font-weight:800;font-size:11px;margin-bottom:4px;color:#1e293b;">📋 종합 소견</div>
-      <div style="font-size:11px;line-height:1.75;color:#475569;">
+    <div style="background:#f8fafc;border-left:4px solid #2563eb;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:14px;">
+      <div style="font-weight:800;font-size:12px;margin-bottom:6px;color:#1e293b;">📋 종합 소견</div>
+      <div style="font-size:11.5px;line-height:1.85;color:#475569;">
         <strong style="color:#1e293b;">${state.childName||"대상아동"}</strong>(생활연령 ${sc.age}개월)의 검사 결과,
         수용언어 등가월령 <strong style="color:#1e293b;">${sc.r.equiv}개월</strong>(정반응률 ${sc.r.pct}%, <span style="color:${interpColor[sc.r.interp.cls]};font-weight:700;">${interpLabel[sc.r.interp.cls]}</span>),
         표현언어 등가월령 <strong style="color:#1e293b;">${sc.e.equiv}개월</strong>(정반응률 ${sc.e.pct}%, <span style="color:${interpColor[sc.e.interp.cls]};font-weight:700;">${interpLabel[sc.e.interp.cls]}</span>)으로 측정되었습니다.
@@ -1862,26 +1861,16 @@ function downloadPDF() {
       useCORS: true,
       logging: false,
       backgroundColor: "#ffffff",
-      width: 750,
+      width: 740,
     }).then(canvas => {
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
       const pageW = 210, pageH = 297;
-      const margin = 8;
-      const availW = pageW - margin * 2;
-      const availH = pageH - margin * 2;
-
-      // 캔버스 비율 기준으로 A4 안에 완전히 들어오도록 스케일 계산
-      const scaleByW = availW / (canvas.width / 2);          // 좌우 기준
-      const scaleByH = availH / (canvas.height / 2);         // 상하 기준
-      const scale = Math.min(scaleByW, scaleByH, 1);         // 1 초과하면 원본 크기 유지
-
-      const imgW = (canvas.width / 2) * scale;
-      const imgH = (canvas.height / 2) * scale;
-      const offsetX = margin + (availW - imgW) / 2;          // 가로 중앙 정렬
-      const offsetY = margin;
-
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", offsetX, offsetY, imgW, imgH);
+      // 콘텐츠를 A4 한 장에 맞게 스케일 조정
+      const imgW = pageW - 10; // 좌우 여백 5mm씩
+      const imgH = canvas.height * (imgW / canvas.width);
+      const finalH = Math.min(imgH, pageH - 10); // 최대 A4 높이
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 5, 5, imgW, finalH);
       pdf.save(`SELSI_${state.childName || "결과"}_${state.examDate || "검사"}.pdf`);
       printArea.style.display = "none";
       printArea.innerHTML = "";
@@ -1898,21 +1887,21 @@ function downloadPDF() {
 
 // ── 결과 QR 공유 ──
 function showResultQR() {
-  const sid  = state.currentSessionId;
+  const sid = state.currentSessionId;
   const name = state.childName || "아동";
   const age  = getAge();
-  const sc   = calcScores();
 
-  // 항상 보호자 검사 앱 URL 사용 (sid 있으면 포함, 없으면 파라미터만)
   let url;
   if (sid) {
-    url = `https://christalmun-sarang.github.io/selsi/?sid=${encodeURIComponent(sid)}&name=${encodeURIComponent(name)}&age=${age}`;
+    url = `https://christalmun-sarang.github.io/selsi/?sid=${sid}&name=${encodeURIComponent(name)}&age=${age}`;
   } else {
-    // 바로검사 결과 — sid 없이 name+age 파라미터로 전달 (보호자가 결과 확인용)
-    url = `https://christalmun-sarang.github.io/selsi/?name=${encodeURIComponent(name)}&age=${age}&re=${sc.r.equiv}&ee=${sc.e.equiv}&rp=${sc.r.pct}&ep=${sc.e.pct}&ri=${sc.r.interp.cls}&ei=${sc.e.interp.cls}&view=result`;
+    // 바로검사 결과 — 세션 없으므로 결과 요약 파라미터로 전달
+    const sc = calcScores();
+    url = `https://christalmun-sarang.github.io/selsi/result.html?name=${encodeURIComponent(name)}&age=${age}&re=${sc.r.equiv}&ee=${sc.e.equiv}&rp=${sc.r.pct}&ep=${sc.e.pct}&ri=${sc.r.interp.cls}&ei=${sc.e.interp.cls}`;
   }
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&margin=10`;
+  const sc = calcScores();
 
   const overlay = document.createElement("div");
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;";
