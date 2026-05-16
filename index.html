@@ -680,6 +680,7 @@
       <div class="result-btns">
         <button class="btn-secondary" onclick="goStep(2)">← 검사 수정</button>
         <button class="btn-green" onclick="downloadPDF()">📄 PDF 결과지 저장</button>
+        <button class="btn-secondary" onclick="showResultQR()" style="background:#6366f1;color:white;border-color:#6366f1;">📲 결과 QR 공유</button>
         <button class="btn-secondary" onclick="resetAll()" style="background:#fef2f2;color:#dc2626">🔄 새 검사</button>
       </div>
     </div>
@@ -1227,8 +1228,9 @@ function showResultModal(r) {
         <div class="opinion-text">${state.childName}(생활연령 ${sc.age}개월)의 SELSI 결과, 수용언어 등가월령 <strong>${sc.r.equiv}개월</strong>, 표현언어 등가월령 <strong>${sc.e.equiv}개월</strong>으로 측정되었습니다. ${opinion}</div>
         <div class="opinion-warn">⚠️ 본 결과는 선별검사 참고용이며, 공식적인 임상 진단 자료로 사용할 수 없습니다.</div>
       </div>
-      <div style="display:flex;gap:10px;margin-top:20px;">
-        <button onclick="downloadPDF()" class="btn-green" style="flex:1;">📄 PDF 결과지 저장</button>
+      <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+        <button onclick="downloadPDF()" class="btn-green" style="flex:1;min-width:140px;">📄 PDF 결과지 저장</button>
+        <button onclick="showResultQR()" style="flex:1;min-width:120px;padding:12px;background:#6366f1;color:white;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">📲 QR 공유</button>
         <button onclick="document.getElementById('remote-result-modal').style.display='none'" class="btn-secondary">닫기</button>
       </div>
     </div>`;
@@ -1705,22 +1707,23 @@ function downloadPDF() {
 
   // ── 결과지 HTML 생성 ──
   function profileRows(profile) {
-    return profile.map(p => {
+    return profile.map((p, i) => {
       const c = p.pct >= 80 ? "#16a34a" : p.pct >= 50 ? "#d97706" : "#dc2626";
+      const bg = i % 2 === 0 ? "white" : "#fafafa";
       const autoTag = p.autoMode === "auto-pass"
-        ? `<span style="font-size:8px;background:#dcfce7;color:#15803d;border-radius:3px;padding:1px 4px;margin-left:3px;">자동가능</span>`
+        ? `<span style="font-size:8px;background:#dcfce7;color:#15803d;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">자동가능</span>`
         : p.autoMode === "auto-fail"
-        ? `<span style="font-size:8px;background:#fee2e2;color:#dc2626;border-radius:3px;padding:1px 4px;margin-left:3px;">자동불가</span>`
-        : `<span style="font-size:8px;background:#dbeafe;color:#1d4ed8;border-radius:3px;padding:1px 4px;margin-left:3px;">직접체크</span>`;
-      return `<tr style="border-bottom:1px solid #e2e8f0;">
-        <td style="padding:4px 8px;font-size:11px;">${p.label}${autoTag}</td>
-        <td style="padding:4px 8px;text-align:center;font-size:11px;">${p.passed}/${p.total}</td>
-        <td style="padding:4px 8px;">
-          <div style="display:flex;align-items:center;gap:4px;">
-            <div style="flex:1;height:5px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+        ? `<span style="font-size:8px;background:#fee2e2;color:#dc2626;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">자동불가</span>`
+        : `<span style="font-size:8px;background:#dbeafe;color:#1d4ed8;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">직접체크</span>`;
+      return `<tr style="border-bottom:1px solid #f1f5f9;background:${bg};">
+        <td style="padding:5px 10px;font-size:11px;font-weight:600;color:#334155;">${p.label}${autoTag}</td>
+        <td style="padding:5px 8px;text-align:center;font-size:11px;font-weight:700;color:#475569;">${p.passed}/${p.total}</td>
+        <td style="padding:5px 10px;">
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="flex:1;height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
               <div style="width:${p.pct}%;height:100%;background:${c};border-radius:99px;"></div>
             </div>
-            <span style="font-weight:700;color:${c};font-size:10px;min-width:30px;">${p.pct}%</span>
+            <span style="font-weight:800;color:${c};font-size:10.5px;min-width:32px;">${p.pct}%</span>
           </div>
         </td>
       </tr>`;
@@ -1762,29 +1765,29 @@ function downloadPDF() {
   }
 
   const printHTML = `
-  <div style="font-family:'Noto Sans KR',sans-serif;width:740px;padding:16px 20px;color:#1e293b;box-sizing:border-box;">
+  <div style="font-family:'Noto Sans KR',sans-serif;width:750px;padding:20px 24px;color:#1e293b;box-sizing:border-box;">
 
     <!-- 헤더 -->
-    <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;border-radius:10px;padding:12px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
-      <div style="background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:7px;padding:4px 12px;font-weight:900;font-size:18px;letter-spacing:3px;flex-shrink:0;">SELSI</div>
+    <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;border-radius:12px;padding:14px 20px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
+      <div style="background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);border-radius:8px;padding:5px 14px;font-weight:900;font-size:19px;letter-spacing:3px;flex-shrink:0;">SELSI</div>
       <div>
-        <div style="font-size:15px;font-weight:800;">영·유아 언어발달 검사 결과지</div>
-        <div style="font-size:10px;opacity:0.75;margin-top:1px;">Sequenced Language Scale for Infants</div>
+        <div style="font-size:16px;font-weight:800;letter-spacing:-0.3px;">영·유아 언어발달 검사 결과지</div>
+        <div style="font-size:11px;opacity:0.78;margin-top:2px;">Sequenced Language Scale for Infants</div>
       </div>
-      <div style="margin-left:auto;text-align:right;font-size:11px;opacity:0.85;">
+      <div style="margin-left:auto;text-align:right;font-size:11px;opacity:0.88;line-height:1.8;">
         검사일: ${examDateFmt}<br>검사자: ${state.examiner||"-"}
       </div>
     </div>
 
-    <!-- 아동 정보 + 점수 요약 (한 줄) -->
-    <div style="display:flex;gap:10px;margin-bottom:10px;">
+    <!-- 아동 정보 + 점수 요약 -->
+    <div style="display:flex;gap:12px;margin-bottom:14px;align-items:stretch;">
       <!-- 아동 정보 -->
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;flex:0 0 auto;min-width:200px;">
-        <div style="font-weight:800;font-size:11px;color:#64748b;margin-bottom:7px;">👶 아동 정보</div>
+      <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 16px;flex:0 0 auto;min-width:190px;">
+        <div style="font-weight:800;font-size:11px;color:#64748b;margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;">👶 아동 정보</div>
         ${[["이름",state.childName||"-"],["성별",state.gender||"-"],["생활연령",sc.age+"개월 ("+Math.floor(sc.age/12)+"세 "+sc.age%12+"개월)"]].map(([k,v])=>`
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">
-          <span style="color:#94a3b8;font-weight:600;">${k}</span>
-          <span style="font-weight:700;color:#1e293b;">${v}</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px;gap:8px;">
+          <span style="color:#94a3b8;font-weight:600;white-space:nowrap;">${k}</span>
+          <span style="font-weight:700;color:#1e293b;text-align:right;">${v}</span>
         </div>`).join("")}
       </div>
       <!-- 수용언어 점수 -->
@@ -1794,27 +1797,27 @@ function downloadPDF() {
     </div>
 
     <!-- 프로파일 테이블 2개 나란히 -->
-    <div style="display:flex;gap:10px;margin-bottom:10px;">
+    <div style="display:flex;gap:12px;margin-bottom:14px;">
       <!-- 수용언어 -->
       <div style="flex:1;">
-        <div style="font-weight:800;font-size:11px;color:#1e293b;margin-bottom:5px;">🎧 수용언어 월령별 프로파일</div>
-        <table style="width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
+        <div style="font-weight:800;font-size:11px;color:#1e293b;margin-bottom:6px;padding-left:2px;">🎧 수용언어 월령별 프로파일</div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:10px;overflow:hidden;border:1.5px solid #e2e8f0;">
           <thead><tr style="background:#f1f5f9;">
-            <th style="padding:5px 8px;text-align:left;font-weight:700;color:#475569;">월령 구간</th>
-            <th style="padding:5px 8px;text-align:center;font-weight:700;color:#475569;">통과</th>
-            <th style="padding:5px 8px;text-align:left;font-weight:700;color:#475569;">정반응률</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">월령 구간</th>
+            <th style="padding:6px 8px;text-align:center;font-weight:700;color:#475569;font-size:10px;">통과</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">정반응률</th>
           </tr></thead>
           <tbody>${profileRows(rProfile)}</tbody>
         </table>
       </div>
       <!-- 표현언어 -->
       <div style="flex:1;">
-        <div style="font-weight:800;font-size:11px;color:#1e293b;margin-bottom:5px;">🗣️ 표현언어 월령별 프로파일</div>
-        <table style="width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
+        <div style="font-weight:800;font-size:11px;color:#1e293b;margin-bottom:6px;padding-left:2px;">🗣️ 표현언어 월령별 프로파일</div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:10px;overflow:hidden;border:1.5px solid #e2e8f0;">
           <thead><tr style="background:#f1f5f9;">
-            <th style="padding:5px 8px;text-align:left;font-weight:700;color:#475569;">월령 구간</th>
-            <th style="padding:5px 8px;text-align:center;font-weight:700;color:#475569;">통과</th>
-            <th style="padding:5px 8px;text-align:left;font-weight:700;color:#475569;">정반응률</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">월령 구간</th>
+            <th style="padding:6px 8px;text-align:center;font-weight:700;color:#475569;font-size:10px;">통과</th>
+            <th style="padding:6px 10px;text-align:left;font-weight:700;color:#475569;font-size:10px;">정반응률</th>
           </tr></thead>
           <tbody>${profileRows(eProfile)}</tbody>
         </table>
@@ -1822,20 +1825,20 @@ function downloadPDF() {
     </div>
 
     <!-- 종합 소견 -->
-    <div style="background:#f8fafc;border-left:3px solid #2563eb;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:10px;">
-      <div style="font-weight:800;font-size:11px;margin-bottom:5px;">📋 종합 소견</div>
-      <div style="font-size:11px;line-height:1.75;color:#475569;">
-        ${state.childName||"대상아동"}(생활연령 ${sc.age}개월)의 검사 결과,
-        수용언어 등가월령 <strong style="color:#1e293b;">${sc.r.equiv}개월</strong>(정반응률 ${sc.r.pct}%, ${interpLabel[sc.r.interp.cls]}),
-        표현언어 등가월령 <strong style="color:#1e293b;">${sc.e.equiv}개월</strong>(정반응률 ${sc.e.pct}%, ${interpLabel[sc.e.interp.cls]})으로 측정되었습니다.
+    <div style="background:#f8fafc;border-left:4px solid #2563eb;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:14px;">
+      <div style="font-weight:800;font-size:12px;margin-bottom:6px;color:#1e293b;">📋 종합 소견</div>
+      <div style="font-size:11.5px;line-height:1.85;color:#475569;">
+        <strong style="color:#1e293b;">${state.childName||"대상아동"}</strong>(생활연령 ${sc.age}개월)의 검사 결과,
+        수용언어 등가월령 <strong style="color:#1e293b;">${sc.r.equiv}개월</strong>(정반응률 ${sc.r.pct}%, <span style="color:${interpColor[sc.r.interp.cls]};font-weight:700;">${interpLabel[sc.r.interp.cls]}</span>),
+        표현언어 등가월령 <strong style="color:#1e293b;">${sc.e.equiv}개월</strong>(정반응률 ${sc.e.pct}%, <span style="color:${interpColor[sc.e.interp.cls]};font-weight:700;">${interpLabel[sc.e.interp.cls]}</span>)으로 측정되었습니다.
         ${opinion}
       </div>
     </div>
 
     <!-- 서명란 -->
-    <div style="display:flex;justify-content:space-between;padding:7px 4px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;">
-      <div>검사자 서명: ____________________</div>
-      <div>※ 본 결과는 선별검사 참고용이며, 공식 임상 진단 자료로 사용할 수 없습니다.</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-top:1.5px solid #e2e8f0;font-size:10px;color:#94a3b8;">
+      <div>검사자 서명: ____________________________</div>
+      <div style="text-align:center;font-size:9.5px;">※ 본 결과는 선별검사 참고용이며, 공식 임상 진단 자료로 사용할 수 없습니다.</div>
       <div>검사일: ${examDateFmt}</div>
     </div>
 
@@ -1880,6 +1883,73 @@ function downloadPDF() {
       btn.disabled = false;
     });
   }, 200);
+}
+
+// ── 결과 QR 공유 ──
+function showResultQR() {
+  const sid = state.currentSessionId;
+  const name = state.childName || "아동";
+  const age  = getAge();
+
+  let url;
+  if (sid) {
+    url = `https://christalmun-sarang.github.io/selsi/?sid=${sid}&name=${encodeURIComponent(name)}&age=${age}`;
+  } else {
+    // 바로검사 결과 — 세션 없으므로 결과 요약 파라미터로 전달
+    const sc = calcScores();
+    url = `https://christalmun-sarang.github.io/selsi/result.html?name=${encodeURIComponent(name)}&age=${age}&re=${sc.r.equiv}&ee=${sc.e.equiv}&rp=${sc.r.pct}&ep=${sc.e.pct}&ri=${sc.r.interp.cls}&ei=${sc.e.interp.cls}`;
+  }
+
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&margin=10`;
+  const sc = calcScores();
+
+  const overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;";
+
+  overlay.innerHTML = `
+    <div style="background:white;border-radius:22px;max-width:400px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.28);overflow:hidden;">
+      <!-- 헤더 -->
+      <div style="background:linear-gradient(135deg,#4f46e5,#6366f1);color:white;padding:18px 22px;">
+        <div style="font-size:17px;font-weight:800;margin-bottom:2px;">📲 결과지 QR 공유</div>
+        <div style="font-size:12px;opacity:0.85;">보호자 스마트폰으로 스캔하여 결과를 확인하세요</div>
+      </div>
+      <!-- 아동 정보 요약 -->
+      <div style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:12px 22px;display:flex;gap:16px;">
+        <div style="font-size:13px;color:#475569;">
+          <span style="font-weight:700;color:#1e293b;">${name}</span>
+          <span style="color:#94a3b8;"> · </span>${age}개월
+        </div>
+        <div style="font-size:12px;color:#475569;">
+          수용 <strong style="color:#1e293b;">${sc.r.equiv}개월</strong> · 표현 <strong style="color:#1e293b;">${sc.e.equiv}개월</strong>
+        </div>
+      </div>
+      <!-- QR 코드 -->
+      <div style="padding:22px;text-align:center;">
+        <div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:16px;padding:16px;display:inline-block;margin-bottom:16px;">
+          <img src="${qrUrl}" width="200" height="200" style="display:block;border-radius:8px;"
+            onerror="this.parentElement.innerHTML='<div style=\\'padding:20px;color:#94a3b8;font-size:13px;\\'>QR 생성 실패<br>아래 링크를 복사해 주세요</div>'">
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:14px;">스캔하면 결과 요약 페이지로 연결됩니다</div>
+        <!-- 링크 복사 -->
+        <div style="background:#f1f5f9;border-radius:10px;padding:10px 14px;font-size:11px;word-break:break-all;color:#334155;margin-bottom:14px;text-align:left;border:1px solid #e2e8f0;">
+          <div style="font-size:9px;color:#94a3b8;font-weight:700;margin-bottom:4px;text-transform:uppercase;">🔗 결과 공유 링크</div>
+          ${url}
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button id="qr-copy-btn"
+            onclick="navigator.clipboard.writeText('${url}').then(()=>{document.getElementById('qr-copy-btn').textContent='✅ 복사됨!';setTimeout(()=>document.getElementById('qr-copy-btn').textContent='📋 링크 복사',2000)})"
+            style="flex:1;padding:11px;background:#6366f1;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+            📋 링크 복사
+          </button>
+          <button onclick="this.closest('div[style*=fixed]').remove()"
+            style="flex:1;padding:11px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
 }
 
 // ── 리셋 ──
