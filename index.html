@@ -1052,37 +1052,85 @@ function renderSessionList() {
     el.innerHTML = '<div class="empty-state">📭 해당 항목이 없습니다.</div>';
     return;
   }
-  el.innerHTML = filtered.map(s => {
+
+  // innerHTML 대신 DOM 직접 생성 — 따옴표 충돌 완전 회피
+  el.innerHTML = "";
+  filtered.forEach(s => {
     const isDone = s.status === "completed";
     const dateStr = s.exam_date || (s.created_at ? s.created_at.slice(0,10) : "-");
     const completedStr = s.completed_at
       ? new Date(s.completed_at).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})
       : null;
-    // 미완료 경고 표시
-    const pendingWarn = !isDone
-      ? `<div style="font-size:11px;color:#d97706;margin-top:3px;font-weight:600;">⚠️ 아직 검사가 완료되지 않았습니다</div>`
-      : "";
-    return `<div class="session-row ${isDone ? "completed" : "pending"}" style="position:relative">
-      <div class="session-avatar ${isDone ? "completed" : "pending"}" onclick="${isDone ? `showSessionResult("${s.session_id}")` : ""}" style="${isDone?"cursor:pointer":""}">${isDone ? "✅" : "⏳"}</div>
-      <div class="session-info" onclick="${isDone ? `showSessionResult("${s.session_id}")` : ""}" style="${isDone?"cursor:pointer;flex:1":"flex:1"}">
-        <div class="session-name">${s.child_name || "미입력"} <span style="font-size:12px;font-weight:500;color:var(--slate-500);">${s.child_age || "-"}개월 · ${s.gender || "-"}</span></div>
-        <div class="session-meta">검사일: ${dateStr} · 검사자: ${s.examiner || "-"}${completedStr ? " · 완료: "+completedStr : ""}</div>
-        ${pendingWarn}
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;">
-        <div class="session-badge ${isDone ? "completed" : "pending"}">${isDone ? "완료" : "검사중"}</div>
-        <button onclick="deleteSession(event,'${s.session_id}','${(s.child_name||"").replace(/'/g,"")}')"
-          style="padding:4px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
-          🗑 삭제
-        </button>
-      </div>
-    </div>`;
-  }).join("");
+
+    // 행 컨테이너
+    const row = document.createElement("div");
+    row.className = "session-row " + (isDone ? "completed" : "pending");
+    row.style.cssText = "position:relative;cursor:" + (isDone?"pointer":"default");
+
+    // 아바타
+    const avatar = document.createElement("div");
+    avatar.className = "session-avatar " + (isDone ? "completed" : "pending");
+    avatar.textContent = isDone ? "✅" : "⏳";
+    row.appendChild(avatar);
+
+    // 정보 영역
+    const info = document.createElement("div");
+    info.className = "session-info";
+    info.style.flex = "1";
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "session-name";
+    nameEl.innerHTML = (s.child_name || "미입력") +
+      ' <span style="font-size:12px;font-weight:500;color:var(--slate-500);">' +
+      (s.child_age || "-") + "개월 · " + (s.gender || "-") + "</span>";
+    info.appendChild(nameEl);
+
+    const metaEl = document.createElement("div");
+    metaEl.className = "session-meta";
+    metaEl.textContent = "검사일: " + dateStr + " · 검사자: " + (s.examiner || "-") +
+      (completedStr ? " · 완료: " + completedStr : "");
+    info.appendChild(metaEl);
+
+    if (!isDone) {
+      const warn = document.createElement("div");
+      warn.style.cssText = "font-size:11px;color:#d97706;margin-top:3px;font-weight:600;";
+      warn.textContent = "⚠️ 아직 검사가 완료되지 않았습니다";
+      info.appendChild(warn);
+    }
+    row.appendChild(info);
+
+    // 오른쪽: 배지 + 삭제 버튼
+    const right = document.createElement("div");
+    right.style.cssText = "display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;";
+
+    const badge = document.createElement("div");
+    badge.className = "session-badge " + (isDone ? "completed" : "pending");
+    badge.textContent = isDone ? "완료" : "검사중";
+    right.appendChild(badge);
+
+    const delBtn = document.createElement("button");
+    delBtn.style.cssText = "padding:4px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;";
+    delBtn.textContent = "🗑 삭제";
+    delBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      deleteSession(s.session_id, s.child_name || "미입력");
+    });
+    right.appendChild(delBtn);
+    row.appendChild(right);
+
+    // 완료된 행만 클릭 → 결과 보기
+    if (isDone) {
+      row.addEventListener("click", function() {
+        showSessionResult(s.session_id);
+      });
+    }
+
+    el.appendChild(row);
+  });
 }
 
-async function deleteSession(e, sessionId, name) {
-  e.stopPropagation();
-  if (!confirm(`⚠️ "${name}" 아동의 검사 데이터를 삭제하시겠습니까?\n\n삭제된 데이터는 복구할 수 없습니다.`)) return;
+async function deleteSession(sessionId, name) {
+  if (!confirm('⚠️ "' + name + '" 아동의 검사 데이터를 삭제하시겠습니까?\n\n삭제된 데이터는 복구할 수 없습니다.')) return;
   try {
     await sbFetch("selsi_sessions?session_id=eq."+sessionId, {
       method: "DELETE", prefer: "return=minimal"
