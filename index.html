@@ -1152,13 +1152,14 @@ async function showSessionResult(sessionId) {
 }
 
 function showResultModal(r) {
-  state.childName  = r.child_name  || "";
-  state.gender     = r.gender      || "";
-  state.examiner   = r.examiner    || "";
-  state.examDate   = r.exam_date   || "";
-  state._remoteAge = r.child_age;
-  state.answers    = r.answers     || {};
-  state.birthYear  = ""; state.birthMonth = "";
+  state.childName       = r.child_name  || "";
+  state.gender          = r.gender      || "";
+  state.examiner        = r.examiner    || "";
+  state.examDate        = r.exam_date   || "";
+  state._remoteAge      = r.child_age;
+  state.answers         = r.answers     || {};
+  state.birthYear       = ""; state.birthMonth = "";
+  state.currentSessionId = r.session_id || null;  // QR 공유에 필요
 
   const sc = calcScores();
   const rProfile = groupProfile("receptive");
@@ -1887,21 +1888,21 @@ function downloadPDF() {
 
 // ── 결과 QR 공유 ──
 function showResultQR() {
-  const sid = state.currentSessionId;
+  const sid  = state.currentSessionId;
   const name = state.childName || "아동";
   const age  = getAge();
+  const sc   = calcScores();
 
+  // 항상 보호자 검사 앱 URL 사용 (sid 있으면 포함, 없으면 파라미터만)
   let url;
   if (sid) {
-    url = `https://christalmun-sarang.github.io/selsi/?sid=${sid}&name=${encodeURIComponent(name)}&age=${age}`;
+    url = `https://christalmun-sarang.github.io/selsi/?sid=${encodeURIComponent(sid)}&name=${encodeURIComponent(name)}&age=${age}`;
   } else {
-    // 바로검사 결과 — 세션 없으므로 결과 요약 파라미터로 전달
-    const sc = calcScores();
-    url = `https://christalmun-sarang.github.io/selsi/result.html?name=${encodeURIComponent(name)}&age=${age}&re=${sc.r.equiv}&ee=${sc.e.equiv}&rp=${sc.r.pct}&ep=${sc.e.pct}&ri=${sc.r.interp.cls}&ei=${sc.e.interp.cls}`;
+    // 바로검사 결과 — sid 없이 name+age 파라미터로 전달 (보호자가 결과 확인용)
+    url = `https://christalmun-sarang.github.io/selsi/?name=${encodeURIComponent(name)}&age=${age}&re=${sc.r.equiv}&ee=${sc.e.equiv}&rp=${sc.r.pct}&ep=${sc.e.pct}&ri=${sc.r.interp.cls}&ei=${sc.e.interp.cls}&view=result`;
   }
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}&margin=10`;
-  const sc = calcScores();
 
   const overlay = document.createElement("div");
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;";
