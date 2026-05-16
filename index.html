@@ -457,6 +457,63 @@
   .age-chip.over-age {
     background: #fef2f2; border-color: #fca5a5; color: var(--red);
   }
+
+  /* ── 상단 탭 (검사 / 결과조회) ── */
+  .main-tabs {
+    display: flex; gap: 0; margin-bottom: 20px;
+    background: white; border-radius: 14px;
+    overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+  }
+  .main-tab {
+    flex: 1; padding: 14px 10px;
+    border: none; background: white; color: var(--slate-500);
+    font-size: 15px; font-weight: 700; font-family: inherit;
+    cursor: pointer; transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+  }
+  .main-tab.active {
+    color: var(--primary); border-bottom-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .main-tab:hover:not(.active) { background: var(--slate-50); }
+
+  /* ── 결과 조회 카드 ── */
+  .result-list-card { background: white; border-radius: 18px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 24px; }
+  .result-list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .result-list-title { font-size: 18px; font-weight: 800; color: var(--slate-900); }
+  .btn-refresh {
+    padding: 8px 16px; background: var(--primary-light); color: var(--primary);
+    border: 1.5px solid var(--primary); border-radius: 10px;
+    font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-refresh:hover { background: var(--primary); color: white; }
+  .session-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; border-radius: 12px;
+    border: 1.5px solid var(--slate-200); background: var(--slate-50);
+    margin-bottom: 10px; cursor: pointer; transition: all 0.18s;
+  }
+  .session-row:hover { border-color: var(--primary); background: var(--primary-light); }
+  .session-row.completed { border-color: #86efac; background: var(--green-light); }
+  .session-row.pending { border-color: #fde68a; background: #fffbeb; }
+  .session-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .session-avatar.completed { background: #dcfce7; }
+  .session-avatar.pending   { background: #fef9c3; }
+  .session-info { flex: 1; }
+  .session-name { font-size: 15px; font-weight: 800; color: var(--slate-900); }
+  .session-meta { font-size: 12px; color: var(--slate-500); margin-top: 2px; }
+  .session-badge {
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .session-badge.completed { background: var(--green); color: white; }
+  .session-badge.pending   { background: #d97706; color: white; }
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--slate-400); font-size: 14px; }
 </style>
 </head>
 <body>
@@ -472,181 +529,186 @@
 </header>
 
 <div class="main">
-  <!-- 스텝 인디케이터 -->
-  <div class="steps" id="stepBar">
-    <div class="step-item active" id="step1-ind" onclick="goStep(1)">
-      <div class="step-circle">1</div>
-      <div class="step-label">아동 정보</div>
-    </div>
-    <div class="step-divider" id="div1"></div>
-    <div class="step-item" id="step2-ind" onclick="goStep(2)">
-      <div class="step-circle">2</div>
-      <div class="step-label">검사 실시</div>
-    </div>
-    <div class="step-divider" id="div2"></div>
-    <div class="step-item" id="step3-ind" onclick="goStep(3)">
-      <div class="step-circle">3</div>
-      <div class="step-label">결과 확인</div>
-    </div>
+
+  <!-- ── 상단 메인 탭 ── -->
+  <div class="main-tabs">
+    <button class="main-tab active" id="tab-exam-btn" onclick="switchMainTab('exam')">
+      📝 검사
+    </button>
+    <button class="main-tab" id="tab-results-btn" onclick="switchMainTab('results')">
+      📋 결과 조회
+    </button>
   </div>
 
-  <!-- 인트로 -->
-  <div id="page-intro" class="card">
-    <div class="intro-hero">
-      <div class="intro-badge">SELSI</div>
-      <div class="intro-title">영·유아 언어발달 검사</div>
-      <div class="intro-en">Sequenced Language Scale for Infants</div>
-      <div class="intro-features">
-        <div class="intro-feat">
-          <div class="feat-icon">🎧</div>
-          <div class="feat-label">수용언어</div>
-          <div class="feat-sub">56문항</div>
-        </div>
-        <div class="intro-feat">
-          <div class="feat-icon">🗣️</div>
-          <div class="feat-label">표현언어</div>
-          <div class="feat-sub">56문항</div>
-        </div>
-        <div class="intro-feat">
-          <div class="feat-icon">📊</div>
-          <div class="feat-label">등가월령 산출</div>
-          <div class="feat-sub">자동 계산</div>
-        </div>
-        <div class="intro-feat">
-          <div class="feat-icon">📋</div>
-          <div class="feat-label">PDF 결과지</div>
-          <div class="feat-sub">즉시 출력</div>
-        </div>
-        <div class="intro-feat">
-          <div class="feat-icon">👶</div>
-          <div class="feat-label">적용 연령</div>
-          <div class="feat-sub">0 ~ 36개월</div>
-        </div>
-        <div class="intro-feat">
-          <div class="feat-icon">🏥</div>
-          <div class="feat-label">언어치료</div>
-          <div class="feat-sub">임상 보조 도구</div>
-        </div>
+  <!-- ══ 검사 탭 패널 ══ -->
+  <div id="panel-exam">
+
+    <!-- 스텝 인디케이터 -->
+    <div class="steps" id="stepBar">
+      <div class="step-item active" id="step1-ind" onclick="goStep(1)">
+        <div class="step-circle">1</div>
+        <div class="step-label">아동 정보</div>
       </div>
-      <div class="intro-note">
-        ⚠️ 본 앱은 SELSI(김영태·김경희, 2004) 검사 구조를 기반으로 한 <strong>교육·참고용</strong> 도구입니다.<br>
-        임상적 진단은 반드시 자격을 갖춘 언어치료사의 전문 평가가 필요합니다.
+      <div class="step-divider" id="div1"></div>
+      <div class="step-item" id="step2-ind" onclick="goStep(2)">
+        <div class="step-circle">2</div>
+        <div class="step-label">검사 실시</div>
+      </div>
+      <div class="step-divider" id="div2"></div>
+      <div class="step-item" id="step3-ind" onclick="goStep(3)">
+        <div class="step-circle">3</div>
+        <div class="step-label">결과 확인</div>
       </div>
     </div>
-    <button class="btn-primary" onclick="goStep(1)">검사 시작하기 →</button>
-  </div>
 
-  <!-- 1단계: 아동 정보 -->
-  <div id="page-1" class="card" style="display:none">
-    <div class="card-title">👶 아동 정보 입력</div>
-    <div class="card-sub">검사 대상 아동의 기본 정보를 입력해 주세요. 생년월일로 생활연령을 자동 계산합니다.</div>
-
-    <div class="form-grid">
-      <div class="form-group full">
-        <label>아동 이름 *</label>
-        <input type="text" id="childName" placeholder="예: 홍길동" oninput="updateAgeChip()">
-      </div>
-      <div class="form-group">
-        <label>출생 연도 *</label>
-        <select id="birthYear" onchange="updateAgeChip()">
-          <option value="">연도 선택</option>
-          <option value="2023">2023년</option>
-          <option value="2024">2024년</option>
-          <option value="2025">2025년</option>
-          <option value="2026">2026년</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>출생 월 *</label>
-        <select id="birthMonth" onchange="updateAgeChip()">
-          <option value="">월 선택</option>
-          <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
-          <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
-          <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
-          <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>성별 *</label>
-        <div class="radio-group">
-          <button class="radio-btn" id="btn-male" onclick="selectGender('남아')">남아</button>
-          <button class="radio-btn" id="btn-female" onclick="selectGender('여아')">여아</button>
+    <!-- 인트로 -->
+    <div id="page-intro" class="card">
+      <div class="intro-hero">
+        <div class="intro-badge">SELSI</div>
+        <div class="intro-title">영·유아 언어발달 검사</div>
+        <div class="intro-en">Sequenced Language Scale for Infants</div>
+        <div class="intro-features">
+          <div class="intro-feat"><div class="feat-icon">🎧</div><div class="feat-label">수용언어</div><div class="feat-sub">56문항</div></div>
+          <div class="intro-feat"><div class="feat-icon">🗣️</div><div class="feat-label">표현언어</div><div class="feat-sub">56문항</div></div>
+          <div class="intro-feat"><div class="feat-icon">📊</div><div class="feat-label">등가월령 산출</div><div class="feat-sub">자동 계산</div></div>
+          <div class="intro-feat"><div class="feat-icon">📋</div><div class="feat-label">PDF 결과지</div><div class="feat-sub">즉시 출력</div></div>
+          <div class="intro-feat"><div class="feat-icon">👶</div><div class="feat-label">적용 연령</div><div class="feat-sub">0 ~ 36개월</div></div>
+          <div class="intro-feat"><div class="feat-icon">🏥</div><div class="feat-label">언어치료</div><div class="feat-sub">임상 보조 도구</div></div>
+        </div>
+        <div class="intro-note">
+          ⚠️ 본 앱은 SELSI(김영태·김경희, 2004) 검사 구조를 기반으로 한 <strong>교육·참고용</strong> 도구입니다.<br>
+          임상적 진단은 반드시 자격을 갖춘 언어치료사의 전문 평가가 필요합니다.
         </div>
       </div>
-      <div class="form-group">
-        <label>검사자</label>
-        <input type="text" id="examiner" placeholder="검사자 이름 (선택)">
+      <button class="btn-primary" onclick="goStep(1)">검사 시작하기 →</button>
+    </div>
+
+    <!-- 1단계: 아동 정보 -->
+    <div id="page-1" class="card" style="display:none">
+      <div class="card-title">👶 아동 정보 입력</div>
+      <div class="card-sub">검사 대상 아동의 기본 정보를 입력해 주세요. 생년월일로 생활연령을 자동 계산합니다.</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>아동 이름 *</label>
+          <input type="text" id="childName" placeholder="예: 홍길동" oninput="updateAgeChip()">
+        </div>
+        <div class="form-group">
+          <label>출생 연도 *</label>
+          <select id="birthYear" onchange="updateAgeChip()">
+            <option value="">연도 선택</option>
+            <option value="2023">2023년</option>
+            <option value="2024">2024년</option>
+            <option value="2025">2025년</option>
+            <option value="2026">2026년</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>출생 월 *</label>
+          <select id="birthMonth" onchange="updateAgeChip()">
+            <option value="">월 선택</option>
+            <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
+            <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
+            <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
+            <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>성별 *</label>
+          <div class="radio-group">
+            <button class="radio-btn" id="btn-male" onclick="selectGender('남아')">남아</button>
+            <button class="radio-btn" id="btn-female" onclick="selectGender('여아')">여아</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>검사자</label>
+          <input type="text" id="examiner" placeholder="검사자 이름 (선택)">
+        </div>
+        <div class="form-group full">
+          <label>검사일</label>
+          <input type="date" id="examDate">
+        </div>
       </div>
-      <div class="form-group full">
-        <label>검사일</label>
-        <input type="date" id="examDate">
+      <div id="ageChip" style="display:none" class="age-chip"></div>
+      <div id="age-over-msg" style="display:none;margin-top:12px;
+        background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;
+        padding:14px 18px;font-size:14px;color:#dc2626;font-weight:600;line-height:1.7;text-align:center;">
+        ⛔ SELSI 검사는 <strong>0~36개월</strong> 아동을 대상으로 합니다.<br>
+        현재 입력한 생활연령이 <strong>36개월을 초과</strong>하여 검사를 진행할 수 없습니다.
+      </div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn-secondary" onclick="showIntro()">← 처음으로</button>
+      </div>
+      <div class="exam-mode-btns">
+        <button class="exam-mode-btn link-btn" id="btn-link-exam" onclick="startExam('link')" disabled>
+          <span class="mode-icon">🔗</span><span>링크검사</span>
+        </button>
+        <button class="exam-mode-btn qr-btn" id="btn-qr-exam" onclick="startExam('qr')" disabled>
+          <span class="mode-icon">📷</span><span>QR검사</span>
+        </button>
+        <button class="exam-mode-btn direct-btn" id="btn-direct-exam" onclick="startExam('direct')" disabled>
+          <span class="mode-icon">▶️</span><span>바로검사</span>
+        </button>
       </div>
     </div>
-    <div id="ageChip" style="display:none" class="age-chip"></div>
-    <div id="age-over-msg" style="display:none;margin-top:12px;
-      background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;
-      padding:14px 18px;font-size:14px;color:#dc2626;font-weight:600;line-height:1.7;text-align:center;">
-      ⛔ SELSI 검사는 <strong>0~36개월</strong> 아동을 대상으로 합니다.<br>
-      현재 입력한 생활연령이 <strong>36개월을 초과</strong>하여 검사를 진행할 수 없습니다.
-    </div>
 
-    <div class="btn-row" style="margin-top:14px;">
-      <button class="btn-secondary" onclick="showIntro()">← 처음으로</button>
-    </div>
-    <div class="exam-mode-btns">
-      <button class="exam-mode-btn link-btn" id="btn-link-exam" onclick="startExam('link')" disabled>
-        <span class="mode-icon">🔗</span>
-        <span>링크검사</span>
-      </button>
-      <button class="exam-mode-btn qr-btn" id="btn-qr-exam" onclick="startExam('qr')" disabled>
-        <span class="mode-icon">📷</span>
-        <span>QR검사</span>
-      </button>
-      <button class="exam-mode-btn direct-btn" id="btn-direct-exam" onclick="startExam('direct')" disabled>
-        <span class="mode-icon">▶️</span>
-        <span>바로검사</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 2단계: 검사 실시 -->
-  <div id="page-2" class="card" style="display:none">
-    <div class="card-title">📝 검사 실시</div>
-
-    <!-- 진행률 -->
-    <div class="progress-bar-wrap">
-      <div class="progress-meta">
-        <span id="progText">0 / 112 문항 완료</span>
-        <span id="progPct">0%</span>
+    <!-- 2단계: 검사 실시 -->
+    <div id="page-2" class="card" style="display:none">
+      <div class="card-title">📝 검사 실시</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-meta">
+          <span id="progText">0 / 112 문항 완료</span>
+          <span id="progPct">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
-    </div>
-
-    <!-- 전체 문항 스크롤 목록 -->
-    <div id="allItemsList" style="display:flex;flex-direction:column;gap:8px;"></div>
-
-    <div style="margin-top:20px;">
-      <button class="btn-secondary" onclick="goStep(1)" style="margin-bottom:10px;">← 이전</button>
-      <button class="btn-primary" id="btn-to-result" onclick="goResult()" disabled style="width:100%;">결과 보기 →</button>
-      <div id="incomplete-msg" style="display:none;margin-top:10px;text-align:center;
-        background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 14px;
-        font-size:13px;color:#c2410c;font-weight:600;">
-        ⚠️ 아직 <span id="remaining-count"></span>개 문항이 남아있습니다. 모든 문항을 체크한 후 결과를 확인할 수 있습니다.
+      <div id="allItemsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <div style="margin-top:20px;">
+        <button class="btn-secondary" onclick="goStep(1)" style="margin-bottom:10px;">← 이전</button>
+        <button class="btn-primary" id="btn-to-result" onclick="goResult()" disabled style="width:100%;">결과 보기 →</button>
+        <div id="incomplete-msg" style="display:none;margin-top:10px;text-align:center;
+          background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 14px;
+          font-size:13px;color:#c2410c;font-weight:600;">
+          ⚠️ 아직 <span id="remaining-count"></span>개 문항이 남아있습니다.
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 3단계: 결과 -->
-  <div id="page-3" class="card" style="display:none">
-    <div class="card-title">📊 검사 결과</div>
-    <div id="resultContent"></div>
-    <div class="result-btns">
-      <button class="btn-secondary" onclick="goStep(2)">← 검사 수정</button>
-      <button class="btn-green" onclick="downloadPDF()">📄 PDF 결과지 저장</button>
-      <button class="btn-secondary" onclick="resetAll()" style="background:#fef2f2;color:#dc2626">🔄 새 검사</button>
+    <!-- 3단계: 결과 -->
+    <div id="page-3" class="card" style="display:none">
+      <div class="card-title">📊 검사 결과</div>
+      <div id="resultContent"></div>
+      <div class="result-btns">
+        <button class="btn-secondary" onclick="goStep(2)">← 검사 수정</button>
+        <button class="btn-green" onclick="downloadPDF()">📄 PDF 결과지 저장</button>
+        <button class="btn-secondary" onclick="resetAll()" style="background:#fef2f2;color:#dc2626">🔄 새 검사</button>
+      </div>
     </div>
-  </div>
-</div>
+
+  </div><!-- /panel-exam -->
+
+  <!-- ══ 결과 조회 탭 패널 ══ -->
+  <div id="panel-results" style="display:none">
+    <div class="result-list-card">
+      <div class="result-list-header">
+        <div class="result-list-title">📋 검사 결과 조회</div>
+        <button class="btn-refresh" onclick="loadSessionList()">🔄 새로고침</button>
+      </div>
+
+      <!-- 필터 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button class="btn-refresh" id="filter-all" onclick="setFilter('all')"
+          style="background:var(--primary);color:white;border-color:var(--primary);">전체</button>
+        <button class="btn-refresh" id="filter-completed" onclick="setFilter('completed')">✅ 완료</button>
+        <button class="btn-refresh" id="filter-pending"   onclick="setFilter('pending')">⏳ 검사중</button>
+      </div>
+
+      <div id="session-list">
+        <div class="empty-state">🔄 목록을 불러오는 중...</div>
+      </div>
+    </div>
+  </div><!-- /panel-results -->
+
+</div><!-- /main -->
 
 <script>
 // ══════════════════════════════════════════════════════════════════
@@ -944,157 +1006,252 @@ async function createSessionAndGetUrl() {
   return `https://christalmun-sarang.github.io/selsi/?sid=${sessionId}&name=${encodeURIComponent(state.childName)}&age=${age}`;
 }
 
+// ── 메인 탭 전환 ──
+let currentFilter = 'all';
+function switchMainTab(tab) {
+  document.getElementById("tab-exam-btn").classList.toggle("active", tab === "exam");
+  document.getElementById("tab-results-btn").classList.toggle("active", tab === "results");
+  document.getElementById("panel-exam").style.display    = tab === "exam"    ? "block" : "none";
+  document.getElementById("panel-results").style.display = tab === "results" ? "block" : "none";
+  if (tab === "results") loadSessionList();
+}
+
+// ── 결과 조회 목록 ──
+let allSessions = [];
+async function loadSessionList() {
+  const el = document.getElementById("session-list");
+  el.innerHTML = '<div class="empty-state">🔄 불러오는 중...</div>';
+  try {
+    const rows = await sbFetch("selsi_sessions?select=*&order=created_at.desc&limit=50");
+    allSessions = rows || [];
+    renderSessionList();
+  } catch(e) {
+    el.innerHTML = `<div class="empty-state">⚠️ 불러오기 실패: ${e.message}<br><small>Supabase 테이블이 생성되어 있는지 확인해 주세요.</small></div>`;
+  }
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ["all","completed","pending"].forEach(id => {
+    const btn = document.getElementById("filter-" + id);
+    if (btn) {
+      btn.style.background = id === f ? "var(--primary)" : "";
+      btn.style.color = id === f ? "white" : "";
+      btn.style.borderColor = id === f ? "var(--primary)" : "";
+    }
+  });
+  renderSessionList();
+}
+
+function renderSessionList() {
+  const el = document.getElementById("session-list");
+  const filtered = currentFilter === "all"
+    ? allSessions
+    : allSessions.filter(s => s.status === currentFilter);
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="empty-state">📭 해당 항목이 없습니다.</div>';
+    return;
+  }
+  el.innerHTML = filtered.map(s => {
+    const isDone = s.status === "completed";
+    const dateStr = s.exam_date || (s.created_at ? s.created_at.slice(0,10) : "-");
+    const completedStr = s.completed_at
+      ? new Date(s.completed_at).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})
+      : null;
+    // 미완료 경고 표시
+    const pendingWarn = !isDone
+      ? `<div style="font-size:11px;color:#d97706;margin-top:3px;font-weight:600;">⚠️ 아직 검사가 완료되지 않았습니다</div>`
+      : "";
+    return `<div class="session-row ${isDone ? "completed" : "pending"}" style="position:relative">
+      <div class="session-avatar ${isDone ? "completed" : "pending"}" onclick="${isDone ? `showSessionResult("${s.session_id}")` : ""}" style="${isDone?"cursor:pointer":""}">${isDone ? "✅" : "⏳"}</div>
+      <div class="session-info" onclick="${isDone ? `showSessionResult("${s.session_id}")` : ""}" style="${isDone?"cursor:pointer;flex:1":"flex:1"}">
+        <div class="session-name">${s.child_name || "미입력"} <span style="font-size:12px;font-weight:500;color:var(--slate-500);">${s.child_age || "-"}개월 · ${s.gender || "-"}</span></div>
+        <div class="session-meta">검사일: ${dateStr} · 검사자: ${s.examiner || "-"}${completedStr ? " · 완료: "+completedStr : ""}</div>
+        ${pendingWarn}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;">
+        <div class="session-badge ${isDone ? "completed" : "pending"}">${isDone ? "완료" : "검사중"}</div>
+        <button onclick="deleteSession(event,'${s.session_id}','${(s.child_name||"").replace(/'/g,"")}')"
+          style="padding:4px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
+          🗑 삭제
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function deleteSession(e, sessionId, name) {
+  e.stopPropagation();
+  if (!confirm(`⚠️ "${name}" 아동의 검사 데이터를 삭제하시겠습니까?\n\n삭제된 데이터는 복구할 수 없습니다.`)) return;
+  try {
+    await sbFetch("selsi_sessions?session_id=eq."+sessionId, {
+      method: "DELETE", prefer: "return=minimal"
+    });
+    allSessions = allSessions.filter(s => s.session_id !== sessionId);
+    renderSessionList();
+  } catch(err) {
+    alert("삭제 실패: " + err.message);
+  }
+}
+
+async function showSessionResult(sessionId) {
+  try {
+    const rows = await sbFetch(`selsi_sessions?session_id=eq.${sessionId}&select=*`);
+    if (!rows || !rows[0]) { alert("결과를 찾을 수 없습니다."); return; }
+    showResultModal(rows[0]);
+  } catch(e) { alert("오류: " + e.message); }
+}
+
+function showResultModal(r) {
+  state.childName  = r.child_name  || "";
+  state.gender     = r.gender      || "";
+  state.examiner   = r.examiner    || "";
+  state.examDate   = r.exam_date   || "";
+  state._remoteAge = r.child_age;
+  state.answers    = r.answers     || {};
+  state.birthYear  = ""; state.birthMonth = "";
+
+  const sc = calcScores();
+  const rProfile = groupProfile("receptive");
+  const eProfile = groupProfile("expressive");
+  const examDateFmt = r.exam_date
+    ? new Date(r.exam_date).toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric"})
+    : "-";
+  const interpColors = { normal:"#16a34a", mild:"#d97706", delay:"#dc2626" };
+
+  function sCard(label, d) {
+    return `<div class="score-card ${d.interp.cls}">
+      <div class="sc-head"><div class="sc-title">${label}</div><div class="sc-badge ${d.interp.cls}">${d.interp.label}</div></div>
+      <div class="sc-nums">
+        <div class="sc-num"><div class="sc-val">${d.score}<span class="sc-unit">점</span></div><div class="sc-key">원점수 (/${d.total})</div></div>
+        <div class="sc-num"><div class="sc-val">${d.pct}<span class="sc-unit">%</span></div><div class="sc-key">정반응률</div></div>
+        <div class="sc-num"><div class="sc-val" style="color:${interpColors[d.interp.cls]}">${d.equiv}<span class="sc-unit">개월</span></div><div class="sc-key">등가월령</div></div>
+      </div>
+      <div class="sc-bar-bg"><div class="sc-bar-fill" style="width:${d.pct}%"></div></div>
+    </div>`;
+  }
+  function pTable(profile, label) {
+    const rows = profile.map(p => {
+      const tag = p.autoMode==="auto-pass"
+        ? `<span style="font-size:10px;background:#dcfce7;color:#15803d;border-radius:4px;padding:1px 5px;margin-left:4px;">자동가능</span>`
+        : p.autoMode==="auto-fail"
+        ? `<span style="font-size:10px;background:#fee2e2;color:#dc2626;border-radius:4px;padding:1px 5px;margin-left:4px;">자동불가</span>`
+        : `<span style="font-size:10px;background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 5px;margin-left:4px;">직접체크</span>`;
+      return `<tr><td>${p.label}${tag}</td><td>${p.passed}/${p.total}</td>
+        <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${p.pct}%;background:${p.color}"></div></div>
+        <span style="font-size:12px;font-weight:700;color:${p.color};min-width:35px">${p.pct}%</span></div></td></tr>`;
+    }).join("");
+    return `<div class="profile-section"><div class="section-title">${label} 월령별 프로파일</div>
+      <table class="profile-table"><thead><tr><th>월령 구간</th><th>통과 문항</th><th>정반응률</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+  }
+
+  let opinion = "";
+  if (sc.r.interp.cls==="normal" && sc.e.interp.cls==="normal")
+    opinion = "수용언어와 표현언어 두 영역 모두 <strong>정상 발달</strong> 범위 내에 있습니다.";
+  else opinion = "일부 영역에서 발달 지연이 의심됩니다. 전문 언어치료사의 정밀 평가를 권장합니다.";
+
+  let modal = document.getElementById("remote-result-modal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "remote-result-modal";
+    modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;overflow-y:auto;padding:20px;display:flex;align-items:flex-start;justify-content:center;";
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div style="background:white;border-radius:20px;max-width:860px;width:100%;padding:28px;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,0.25);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div style="font-size:20px;font-weight:800;">📊 검사 결과 — ${r.child_name || ""}</div>
+        <button onclick="document.getElementById('remote-result-modal').style.display='none'"
+          style="padding:8px 16px;background:var(--slate-100);color:var(--slate-600);border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">✕ 닫기</button>
+      </div>
+      <div class="result-header">
+        <div>
+          <div class="result-name">${state.childName} (${state.gender || "-"})</div>
+          <div class="result-info">검사일: ${examDateFmt} | 검사자: ${state.examiner || "-"}</div>
+        </div>
+        <div class="result-age-badge">생활연령<br><strong>${sc.age}개월</strong></div>
+      </div>
+      <div class="score-cards">${sCard("🎧 수용언어", sc.r)}${sCard("🗣️ 표현언어", sc.e)}</div>
+      ${pTable(rProfile,"🎧 수용언어")}${pTable(eProfile,"🗣️ 표현언어")}
+      <div class="opinion-box">
+        <div class="opinion-title">📋 종합 소견</div>
+        <div class="opinion-text">${state.childName}(생활연령 ${sc.age}개월)의 SELSI 결과, 수용언어 등가월령 <strong>${sc.r.equiv}개월</strong>, 표현언어 등가월령 <strong>${sc.e.equiv}개월</strong>으로 측정되었습니다. ${opinion}</div>
+        <div class="opinion-warn">⚠️ 본 결과는 선별검사 참고용이며, 공식적인 임상 진단 자료로 사용할 수 없습니다.</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button onclick="downloadPDF()" class="btn-green" style="flex:1;">📄 PDF 결과지 저장</button>
+        <button onclick="document.getElementById('remote-result-modal').style.display='none'" class="btn-secondary">닫기</button>
+      </div>
+    </div>`;
+  modal.style.display = "flex";
+}
+
+// ── 검사 시작 ──
 function startExam(mode) {
   saveInfo();
   const age = getAge();
-  if (age > 36) {
-    alert("36개월을 초과한 아동은 검사를 진행할 수 없습니다.");
-    return;
-  }
-  pendingExamMode = mode;
+  if (age > 36) { alert("36개월을 초과한 아동은 검사를 진행할 수 없습니다."); return; }
 
-  if (mode === 'link') {
-    const btn = document.getElementById("btn-link-exam");
+  if (mode === "link" || mode === "qr") {
+    const btnId = mode === "link" ? "btn-link-exam" : "btn-qr-exam";
+    const btn = document.getElementById(btnId);
+    const origHTML = btn.innerHTML;
     btn.textContent = "⏳ 생성 중...";
     btn.disabled = true;
     createSessionAndGetUrl().then(url => {
-      btn.textContent = "🔗 링크검사";
+      btn.innerHTML = origHTML;
       btn.disabled = false;
-      window.open(url, '_blank');
-      showResultPollBanner();
-    }).catch(() => {
-      btn.textContent = "🔗 링크검사";
+      showLinkShareModal(url, mode);
+    }).catch(e => {
+      btn.innerHTML = origHTML;
       btn.disabled = false;
+      alert("링크 생성 실패: " + e.message);
     });
     return;
   }
-  if (mode === 'qr') {
-    const btn = document.getElementById("btn-qr-exam");
-    btn.textContent = "⏳ 생성 중...";
-    btn.disabled = true;
-    createSessionAndGetUrl().then(url => {
-      btn.textContent = "📷 QR검사";
-      btn.disabled = false;
-      showQRModal(url);
-      showResultPollBanner();
-    }).catch(() => {
-      btn.textContent = "📷 QR검사";
-      btn.disabled = false;
-    });
-    return;
-  }
-  // 바로검사: 안내 모달 → 검사 화면
   openGuideModal();
 }
 
 function openGuideModal() {
   document.getElementById("guide-modal").classList.add("open");
 }
-
 function closeGuideModal() {
   document.getElementById("guide-modal").classList.remove("open");
   goStep(2);
 }
 
-// QR 모달 — url을 직접 받음
-function showQRModal(url) {
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}`;
+// 링크/QR 공유 모달
+function showLinkShareModal(url, mode) {
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
   const div = document.createElement("div");
   div.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;";
   div.innerHTML = `
-    <div style="background:white;border-radius:20px;padding:28px 28px 24px;text-align:center;max-width:340px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
-      <div style="font-size:17px;font-weight:800;color:#0f172a;margin-bottom:4px;">📷 QR 검사</div>
-      <div style="font-size:13px;color:#64748b;margin-bottom:16px;">보호자 스마트폰으로 QR을 스캔하세요</div>
-      <div style="background:#f8fafc;border-radius:14px;padding:16px;margin-bottom:14px;display:inline-block;">
-        <img src="${qrUrl}" width="200" height="200" style="display:block;border-radius:8px;"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div style="display:none;font-size:12px;color:#94a3b8;padding:20px;">QR 생성 실패<br>아래 링크를 직접 공유해 주세요</div>
-      </div>
-      <div style="background:#f1f5f9;border-radius:10px;padding:10px 14px;font-size:11px;word-break:break-all;color:#475569;margin-bottom:16px;text-align:left;">
-        <div style="font-size:10px;color:#94a3b8;font-weight:600;margin-bottom:4px;">🔗 검사 링크</div>
+    <div style="background:white;border-radius:20px;padding:26px;max-width:380px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+      <div style="font-size:17px;font-weight:800;color:#0f172a;margin-bottom:4px;">${mode==="qr"?"📷 QR 검사":"🔗 링크 검사"}</div>
+      <div style="font-size:13px;color:#64748b;margin-bottom:14px;">보호자에게 아래 링크를 카카오톡 등으로 전송하세요.</div>
+      ${mode==="qr"?`<div style="text-align:center;margin-bottom:14px;"><img src="${qrUrl}" width="180" height="180" style="border-radius:10px;border:1px solid #e2e8f0;"></div>`:""}
+      <div style="background:#f1f5f9;border-radius:10px;padding:12px;font-size:12px;word-break:break-all;color:#334155;margin-bottom:14px;border:1px solid #e2e8f0;">
+        <div style="font-size:10px;color:#94a3b8;font-weight:600;margin-bottom:4px;">🔗 보호자용 검사 링크</div>
         ${url}
       </div>
-      <div style="display:flex;gap:8px;">
-        <button onclick="navigator.clipboard.writeText('${url}').then(()=>alert('링크 복사됨!'))"
-          style="flex:1;padding:11px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button id="copy-btn-share" onclick="navigator.clipboard.writeText('${url}').then(()=>{document.getElementById('copy-btn-share').textContent='✅ 복사됨!';setTimeout(()=>document.getElementById('copy-btn-share').textContent='📋 링크 복사',2000)})"
+          style="flex:1;padding:11px;background:#6366f1;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
           📋 링크 복사
         </button>
-        <button onclick="this.closest('div[style*=fixed]').remove()"
-          style="flex:1;padding:11px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
-          닫기
+        <button onclick="window.open('${url}','_blank')"
+          style="flex:1;padding:11px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+          🔗 새 탭 열기
         </button>
       </div>
+      <div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:12px;">완료 후 <strong>결과 조회 탭</strong>에서 확인하세요.</div>
+      <button onclick="this.closest('div[style*=fixed]').remove()"
+        style="width:100%;padding:11px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        확인
+      </button>
     </div>`;
   document.body.appendChild(div);
-}
-
-// ── 결과 대기 배너 표시 ──
-let pollTimer = null;
-function showResultPollBanner() {
-  const existing = document.getElementById("result-poll-banner");
-  if (existing) existing.remove();
-  const banner = document.createElement("div");
-  banner.id = "result-poll-banner";
-  banner.style.cssText = `
-    position:fixed;bottom:20px;right:20px;z-index:8888;
-    background:white;border-radius:16px;padding:16px 20px;
-    box-shadow:0 4px 24px rgba(0,0,0,0.18);max-width:300px;
-    border-left:4px solid #2563eb;
-  `;
-  banner.innerHTML = `
-    <div style="font-size:13px;font-weight:800;color:#1e293b;margin-bottom:6px;">⏳ 보호자 검사 대기 중</div>
-    <div style="font-size:12px;color:#64748b;margin-bottom:12px;">보호자가 검사를 완료하면 결과를 확인할 수 있습니다.</div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="pollResult()" id="poll-btn"
-        style="flex:1;padding:9px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
-        🔄 결과 확인
-      </button>
-      <button onclick="document.getElementById('result-poll-banner').remove();clearInterval(pollTimer);"
-        style="padding:9px 12px;background:#f1f5f9;color:#64748b;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
-        닫기
-      </button>
-    </div>
-  `;
-  document.body.appendChild(banner);
-  // 30초마다 자동 폴링
-  clearInterval(pollTimer);
-  pollTimer = setInterval(pollResult, 30000);
-}
-
-async function pollResult() {
-  if (!state.currentSessionId) return;
-  const btn = document.getElementById("poll-btn");
-  if (btn) { btn.textContent = "⏳ 확인 중..."; btn.disabled = true; }
-  try {
-    const rows = await sbFetch(`selsi_sessions?session_id=eq.${state.currentSessionId}&select=*`);
-    if (btn) { btn.textContent = "🔄 결과 확인"; btn.disabled = false; }
-    if (rows && rows.length > 0 && rows[0].status === "completed") {
-      clearInterval(pollTimer);
-      const r = rows[0];
-      document.getElementById("result-poll-banner").remove();
-      showRemoteResult(r);
-    } else {
-      if (btn) btn.closest("div[id=result-poll-banner]")
-        .querySelector("div:nth-child(2)").textContent = "아직 검사가 완료되지 않았습니다. 잠시 후 다시 확인해 주세요.";
-    }
-  } catch(e) {
-    if (btn) { btn.textContent = "🔄 결과 확인"; btn.disabled = false; }
-    console.error("폴링 실패:", e);
-  }
-}
-
-function showRemoteResult(r) {
-  // 원격 결과를 state에 반영 후 결과 화면으로
-  state.childName  = r.child_name;
-  state.gender     = r.gender;
-  state.examiner   = r.examiner;
-  state.examDate   = r.exam_date;
-  state.birthYear  = ""; state.birthMonth = "";
-  state._remoteAge = r.child_age;
-  state.answers    = r.answers || {};
-  // birthYear/Month 없이 나이를 직접 쓰도록 getAge 오버라이드
-  goStep(3);
-  alert(`✅ ${r.child_name} 아동의 검사가 완료되었습니다!`);
 }
 
 function selectGender(g) {
