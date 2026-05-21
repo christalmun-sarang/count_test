@@ -3,24 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>사랑소아과 업무관리 시스템</title>
+<title>사랑소아과 검사 시스템</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary: #1a5f7a;
     --primary-light: #2980b9;
     --primary-dark: #0d3d52;
-    --accent: #e74c3c;
-    --accent-soft: #f39c12;
     --bg: #f0f4f8;
-    --bg-card: #ffffff;
-    --text: #1c2833;
     --text-muted: #5d6d7e;
     --border: #d5e8f0;
-    --shadow: 0 2px 12px rgba(26,95,122,0.10);
-    --shadow-hover: 0 6px 24px rgba(26,95,122,0.18);
-    --tab-active: #1a5f7a;
-    --tab-inactive: #eaf3f8;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +20,6 @@
   body {
     font-family: 'Noto Sans KR', sans-serif;
     background: var(--bg);
-    color: var(--text);
     min-height: 100vh;
   }
 
@@ -39,7 +30,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    height: 68px;
+    height: 56px;
     box-shadow: 0 3px 16px rgba(13,61,82,0.25);
     position: sticky;
     top: 0;
@@ -47,30 +38,29 @@
   }
 
   .header-icon {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     background: rgba(255,255,255,0.18);
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 17px;
   }
 
   header h1 {
     font-family: 'Noto Serif KR', serif;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     color: #fff;
     letter-spacing: -0.3px;
   }
 
   header .subtitle {
-    font-size: 12px;
-    color: rgba(255,255,255,0.65);
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
     font-weight: 300;
     margin-left: auto;
-    letter-spacing: 0.5px;
   }
 
   /* ── Tab Nav ── */
@@ -80,14 +70,11 @@
     padding: 0 32px;
     display: flex;
     gap: 4px;
-    overflow-x: auto;
-    scrollbar-width: none;
     box-shadow: 0 1px 6px rgba(26,95,122,0.06);
   }
-  .tab-nav::-webkit-scrollbar { display: none; }
 
   .tab-btn {
-    padding: 14px 22px;
+    padding: 13px 28px;
     border: none;
     background: none;
     font-family: 'Noto Sans KR', sans-serif;
@@ -98,7 +85,6 @@
     white-space: nowrap;
     position: relative;
     transition: color 0.2s;
-    border-radius: 0;
   }
 
   .tab-btn::after {
@@ -113,318 +99,18 @@
     transition: transform 0.2s;
   }
 
-  .tab-btn.active {
-    color: var(--primary);
-    font-weight: 700;
-  }
+  .tab-btn.active { color: var(--primary); font-weight: 700; }
   .tab-btn.active::after { transform: scaleX(1); }
   .tab-btn:hover { color: var(--primary); }
 
   /* ── Tab Content ── */
-  .tab-content { display: none; padding: 32px; animation: fadeIn 0.25s ease; }
+  .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Section Header ── */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .section-badge {
-    background: var(--primary);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-  }
-
-  .section-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--primary-dark);
-  }
-
-  .section-count {
-    margin-left: auto;
-    font-size: 13px;
-    color: var(--text-muted);
-    background: var(--tab-inactive);
-    padding: 4px 12px;
-    border-radius: 20px;
-  }
-
-  /* ── Category Labels ── */
-  .category-group {
-    margin-bottom: 28px;
-  }
-
-  .category-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--primary);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── Button Grid ── */
-  .btn-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-  }
-
-  /* ── Lecture Button ── */
-  .lecture-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    background: var(--bg-card);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .lecture-btn::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: var(--primary);
-    border-radius: 0;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .lecture-btn:hover {
-    border-color: var(--primary-light);
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
-    color: var(--primary-dark);
-  }
-  .lecture-btn:hover::before { opacity: 1; }
-
-  .btn-num {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    background: var(--tab-inactive);
-    color: var(--primary);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .lecture-btn:hover .btn-num {
-    background: var(--primary);
-    color: #fff;
-  }
-
-  .btn-label {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.3;
-    flex: 1;
-  }
-
-  .btn-arrow {
-    font-size: 14px;
-    color: var(--text-muted);
-    opacity: 0;
-    transition: opacity 0.2s, transform 0.2s;
-    transform: translateX(-4px);
-  }
-  .lecture-btn:hover .btn-arrow {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* ── Coming Soon tabs ── */
-  .coming-soon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 32px;
-    color: var(--text-muted);
-    gap: 12px;
-  }
-  .coming-soon .icon { font-size: 48px; opacity: 0.4; }
-  .coming-soon p { font-size: 16px; font-weight: 500; }
-  .coming-soon small { font-size: 13px; opacity: 0.7; }
-
-  /* ── Responsive ── */
-  @media (max-width: 640px) {
-    header { padding: 0 16px; }
-    .tab-nav { padding: 0 8px; }
-    .tab-content { padding: 20px 16px; }
-    .btn-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
-    header h1 { font-size: 16px; }
-  }
-
-  /* ── 링크 관리 탭 ── */
-  .link-page {
-    padding: 28px 32px;
-  }
-  .saved-links-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 28px;
-  }
-  .saved-link-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 50px;
-    text-decoration: none;
-    color: var(--primary-dark);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .saved-link-chip:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
-  }
-  .saved-link-chip .chip-icon {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--tab-inactive);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    transition: background 0.2s;
-    overflow: hidden;
-  }
-  .saved-link-chip:hover .chip-icon {
-    background: rgba(255,255,255,0.2);
-  }
-  .link-manager-card {
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: var(--shadow);
-  }
-  .link-manager-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .link-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .link-row input {
-    flex: 1;
-    padding: 10px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    color: var(--text);
-    background: var(--bg);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .link-row input:focus { border-color: var(--primary-light); background: #fff; }
-  .link-row input::placeholder { color: #b0bec5; }
-  .link-del-btn {
-    width: 32px; height: 32px;
-    border: none; background: #fee2e2;
-    color: #dc2626; border-radius: 8px;
-    cursor: pointer; font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-  .link-del-btn:hover { background: #fca5a5; }
-  .link-add-btn {
-    padding: 9px 18px;
-    border: 1.5px dashed var(--border);
-    background: transparent;
-    color: var(--text-muted);
-    border-radius: 10px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 600;
-  }
-  .link-add-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--tab-inactive); }
-  .link-save-btn {
-    padding: 11px 28px;
-    background: var(--primary);
-    color: #fff;
+  iframe {
+    width: 100%;
     border: none;
-    border-radius: 10px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-    float: right;
-  }
-  .link-save-btn:hover { background: var(--primary-dark); }
-  .link-manager-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 14px;
-  }
-  .empty-links-msg {
-    color: var(--text-muted);
-    font-size: 14px;
-    padding: 8px 0 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  @media (max-width: 640px) {
-    .link-page { padding: 16px; }
-    .link-row { flex-wrap: wrap; }
-    .link-row input { min-width: 0; }
+    display: block;
   }
 </style>
 </head>
@@ -433,438 +119,44 @@
 <!-- ── HEADER ── -->
 <header>
   <div class="header-icon">🏥</div>
-  <h1>사랑소아과 업무관리 시스템</h1>
-  <span class="subtitle">Sarang Pediatric Clinic</span>
+  <h1>사랑소아과 검사 시스템</h1>
+  <span class="subtitle">접수실</span>
 </header>
 
 <!-- ── TAB NAV ── -->
 <nav class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('tab-links', this)">🔗 링크 관리</button>
-  <button class="tab-btn" onclick="switchTab('tab-lecture', this)">📚 심층강의 교육</button>
-  <button class="tab-btn" onclick="switchTab('tab-tab2', this)">🩺 성인교육</button>
-  <button class="tab-btn" onclick="switchTab('tab-tab3', this)">🧒 SELSI 검사</button>
-  <button class="tab-btn" onclick="switchTab('tab-tab4', this)">🌱 KASQ 검사</button>
+  <button class="tab-btn active" onclick="switchTab('tab-selsi', this)">🧒 SELSI 검사</button>
+  <button class="tab-btn" onclick="switchTab('tab-kasq', this)">🌱 KASQ 검사</button>
 </nav>
 
-<!-- ══ TAB 0 — 링크 관리 ══ -->
-<div id="tab-links" class="tab-content active" style="padding:0;">
-  <div class="link-page">
-
-    <!-- 저장된 링크 바로가기 (상단) -->
-    <div class="section-header" style="margin-bottom:16px;">
-      <span class="section-badge">LINKS</span>
-      <h2 class="section-title">사랑소아과 링크 관리</h2>
-      <span class="section-count" id="link-count-badge">0개</span>
-    </div>
-
-    <div id="saved-links-bar" class="saved-links-bar">
-      <span class="empty-links-msg">💡 아래에서 링크를 추가하면 여기에 바로가기가 생성됩니다</span>
-    </div>
-
-    <!-- 편집 카드 -->
-    <div class="link-manager-card">
-      <div class="link-manager-title">✏️ 링크 추가 / 편집</div>
-      <div id="link-rows"></div>
-      <div class="link-manager-footer">
-        <button class="link-add-btn" onclick="addLinkRow()">+ 행 추가</button>
-        <span id="link-status" style="font-size:13px;color:var(--text-muted);"></span>
-        <button class="link-save-btn" onclick="saveLinks()">💾 저장</button>
-      </div>
-    </div>
-
-  </div>
+<!-- ══ SELSI ══ -->
+<div id="tab-selsi" class="tab-content active">
+  <iframe id="selsi-frame" src="selsi_admin.html" title="SELSI 영·유아 언어발달 검사"></iframe>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     TAB 1 — 심층강의 교육
-══════════════════════════════════════════════ -->
-<div id="tab-lecture" class="tab-content">
-  <div class="section-header">
-    <span class="section-badge">LECTURE</span>
-    <h2 class="section-title">심층강의 교육</h2>
-    <span class="section-count">40개 강의</span>
-  </div>
-
-  <!-- 발달 / 성장 -->
-  <div class="category-group">
-    <div class="category-label">발달 · 성장</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1mUc3tFa78j8iqEIrD1Vri4bXusD425dzJgVx9Rrgwnk/edit?usp=sharing" target="_blank">
-        <span class="btn-num">1</span><span class="btn-label">다리모양걸음걸이</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1uSuLphaRz3XYJKZUgvrTI0haGDBt-c8vSs4DUtWniqc/edit?usp=sharing" target="_blank">
-        <span class="btn-num">2</span><span class="btn-label">청력</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1pREUo15PYQy7u3NfLcj5N-Q4JHBVNzp1-6cYsDrYkog/edit?usp=sharing" target="_blank">
-        <span class="btn-num">3</span><span class="btn-label">시력</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1Ip4a8K7nHWvhu0cGjXUGARGQRH7BgxxKcslMhmsl6Ro/edit?usp=sharing" target="_blank">
-        <span class="btn-num">4</span><span class="btn-label">성장</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1JmRPxIDLvSUzyxaTz4I29Jdgnr4r9G9UBly_H0A-gBc/edit?usp=sharing" target="_blank">
-        <span class="btn-num">5</span><span class="btn-label">가슴</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1M3a5H10sqn3x6fOYN5RuQ3Zk9ONJASsQB6aY9ns4i4M/edit?usp=sharing" target="_blank">
-        <span class="btn-num">6</span><span class="btn-label">언어지연</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1VIiyRRCEMSU0IQyYYKjtUM0txZKl6X7x16khejr-3Bc/edit?usp=sharing" target="_blank">
-        <span class="btn-num">7</span><span class="btn-label">머리모양사두</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1dublJBluouJwOoy7RJ6b6mH9lkxOTrBcrXhk2vrNsnc/edit?usp=sharing" target="_blank">
-        <span class="btn-num">8</span><span class="btn-label">딤플</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1w6JDKEpubiR48nv9LcpzINo866Of4fujk8CrP92zpt0/edit?usp=sharing" target="_blank">
-        <span class="btn-num">27</span><span class="btn-label">체중</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- 알레르기 / 피부 -->
-  <div class="category-group">
-    <div class="category-label">알레르기 · 피부</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1CIUhkMgEvLXB4X1gEBPZIIRp_ANGr188d7JInzOtv_k/edit?usp=sharing" target="_blank">
-        <span class="btn-num">9</span><span class="btn-label">음식알레르기</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1KZ2ZWAhJmJ35HmyFHG_oUGYHnXKRYzskXlfUN9urGzM/edit?usp=sharing" target="_blank">
-        <span class="btn-num">10</span><span class="btn-label">환경알레르기</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1upx15Fbe8zMv_P5pg6c3226t29Z0LX1uVoVBVo0XgO8/edit?usp=sharing" target="_blank">
-        <span class="btn-num">11</span><span class="btn-label">아토피</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/157scaWMLfdcOmQ7iBSIhNe6g9vBZIbjL5WROU0jtKaI/edit?usp=sharing" target="_blank">
-        <span class="btn-num">14</span><span class="btn-label">양성피부병변</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- 소화 / 영양 -->
-  <div class="category-group">
-    <div class="category-label">소화 · 영양</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1pbhOo4CaX-V215ik2QCsyFkWJgp77N6i0s9KFb2D7jg/edit?usp=sharing" target="_blank">
-        <span class="btn-num">12</span><span class="btn-label">변비</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1RWRyNsxgHxf31FKmpRLcKGjw3WIcJoa4cvnxd7iZv1U/edit?usp=sharing" target="_blank">
-        <span class="btn-num">13</span><span class="btn-label">빈혈</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1h8ofrcBXWhsEWXHk8r3cZqQ9TpX2DBfaJNhptcxcq3Q/edit?usp=sharing" target="_blank">
-        <span class="btn-num">21</span><span class="btn-label">영양제</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/15LRh9IrzKHfF2G7apEwS-rE6C-FsC_0kcElAnlZ24BE/edit?usp=sharing" target="_blank">
-        <span class="btn-num">22</span><span class="btn-label">모유수유</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1KjknVdQ8qcl8oAHGcnX7Ak9sAQWTtDqbZnavu2GH0Wk/edit?usp=sharing" target="_blank">
-        <span class="btn-num">28</span><span class="btn-label">이유식</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1WjQq4dSBaNYwWt_cGpmXagNIHr1AaaSk8AfA_5HFfR8/edit?usp=sharing" target="_blank">
-        <span class="btn-num">31</span><span class="btn-label">식사습관</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- 영아 돌봄 -->
-  <div class="category-group">
-    <div class="category-label">영아 돌봄</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1fyOYA_hkRwRk8EvblIMUufOwPqBlFIdALUUeldQITS8/edit?usp=sharing" target="_blank">
-        <span class="btn-num">15</span><span class="btn-label">영아산통</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1JmdzFmnV0rINU2gDRkVwbV-Akm6fwGL9IYoIacuLPGg/edit?usp=sharing" target="_blank">
-        <span class="btn-num">16</span><span class="btn-label">배변훈련</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1XetdzBPeYrTiKcY_Gm5JCddaIpmO6j6jhP6-9Q18r9Y/edit?usp=sharing" target="_blank">
-        <span class="btn-num">17</span><span class="btn-label">포경수술</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1rZ7Q8CKlnRurCs8XPJ-MgXxhxi4kO9B2UnDt9_MB1q8/edit?usp=sharing" target="_blank">
-        <span class="btn-num">18</span><span class="btn-label">기저귀분비물</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1pqJGg8UbQbbDztA1a37wx2SQI4gRG_iHN2qbS9V1IBg/edit?usp=sharing" target="_blank">
-        <span class="btn-num">23</span><span class="btn-label">카시트</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1xKlROjAO2PXmWxDZ4Dcwbc9kwkE-YEE6zYyCPV8y5To/edit?usp=sharing" target="_blank">
-        <span class="btn-num">29</span><span class="btn-label">아이재우기</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1yrQgUctb6QvRn35TdXpPiJMeuCjj6SxsJJYePSVKTZk/edit?usp=sharing" target="_blank">
-        <span class="btn-num">30</span><span class="btn-label">치아관리</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- 행동 / 발달 -->
-  <div class="category-group">
-    <div class="category-label">행동 · 발달</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/130g8APVdOuoPWxXLCZeCfH4Eb4JKTpERnHO_keytvEQ/edit?usp=sharing" target="_blank">
-        <span class="btn-num">19</span><span class="btn-label">소아자위</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1pF9STNZaKyeZzZj9iWzs5E0wnlD_VyuTqYw6gw6ub7M/edit?usp=sharing" target="_blank">
-        <span class="btn-num">20</span><span class="btn-label">미디어노출</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1Zn74A1C_ynsVmB546TZ23xj9X8jZi4jJxPSW-IGHLNE/edit?usp=sharing" target="_blank">
-        <span class="btn-num">32</span><span class="btn-label">동생</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1opzHuHf6HitCgGCQVZfgb56Pa5YeK1fRKOPJPl8W4DA/edit?usp=sharing" target="_blank">
-        <span class="btn-num">39</span><span class="btn-label">분노발작</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- 정신건강 / 신경발달 -->
-  <div class="category-group">
-    <div class="category-label">정신건강 · 신경발달</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1G5Amu9FtQQOnio_4EwtbzeMkbpRACLuqg4r7Hcw6Rpo/edit?usp=sharing" target="_blank">
-        <span class="btn-num">33</span><span class="btn-label">아동학대</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1Ej_UerMfMvyHXs5xaXs_Pzpho7lUYf_pLZsw0lDcLQc/edit?usp=sharing" target="_blank">
-        <span class="btn-num">34</span><span class="btn-label">우울증</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1Mw0ffTxCFm2Q6YLh06Kmrn_Ntdvxtq31A_v9zZ60Hoo/edit?usp=sharing" target="_blank">
-        <span class="btn-num">35</span><span class="btn-label">외상후스트레스장애</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/19npEOMYC5WGfi5qKnWmMmsYs_DwbAzGA7waSXTk5ODU/edit?usp=sharing" target="_blank">
-        <span class="btn-num">36</span><span class="btn-label">강박장애</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/19npEOMYC5WGfi5qKnWmMmsYs_DwbAzGA7waSXTk5ODU/edit?usp=sharing" target="_blank">
-        <span class="btn-num">37</span><span class="btn-label">ADHD</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/17l8P_qBq2Rfrx20beYO-kRMbryQ0HJUu05yxrfkQuhw/edit?usp=sharing" target="_blank">
-        <span class="btn-num">38</span><span class="btn-label">자폐</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1KjBMSteiApFzPRgWW-md6OxstqBy2vqU5qF1Vw7MCGA/edit?usp=sharing" target="_blank">
-        <span class="btn-num">40</span><span class="btn-label">산후우울증</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-</div><!-- /tab-lecture -->
-
-<!-- ══ TAB 2 — 성인교육 ══ -->
-<div id="tab-tab2" class="tab-content">
-  <div class="section-header">
-    <span class="section-badge">ADULT</span>
-    <h2 class="section-title">성인교육</h2>
-    <span class="section-count">3개 강의</span>
-  </div>
-
-  <div class="category-group">
-    <div class="category-label">만성질환 · 약물</div>
-    <div class="btn-grid">
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1S_S_4sDc1_LDZUQrwklrRK3tqbPGLf72l2X18-fdijU/edit?usp=sharing" target="_blank">
-        <span class="btn-num">1</span><span class="btn-label">당뇨</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1vCPgnbiaFmndLU19XH5Sym_bRZ8KmG0emPj3H94-thQ/edit?usp=sharing" target="_blank">
-        <span class="btn-num">2</span><span class="btn-label">고혈압</span><span class="btn-arrow">→</span>
-      </a>
-      <a class="lecture-btn" href="https://docs.google.com/presentation/d/1-PF_RO3zppmXddxHh-W66hAWNnPm3OpbV7_4QSPKax4/edit?usp=sharing" target="_blank">
-        <span class="btn-num">3</span><span class="btn-label">GI약물</span><span class="btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-</div>
-
-<!-- ══ TAB 3 — SELSI ══ -->
-<div id="tab-tab3" class="tab-content" style="padding:0;">
-  <iframe
-    id="selsi-frame"
-    src="selsi_admin.html"
-    style="width:100%;height:calc(100vh - 112px);border:none;display:block;"
-    title="SELSI 영·유아 언어발달 검사"
-    loading="lazy"
-  ></iframe>
-</div>
-
-<!-- ══ TAB 4 — KASQ ══ -->
-<div id="tab-tab4" class="tab-content" style="padding:0;">
-  <iframe
-    id="kasq-frame"
-    src="kasq_admin.html"
-    style="width:100%;height:calc(100vh - 112px);border:none;display:block;"
-    title="KASQ 영유아 발달 선별검사"
-    loading="lazy"
-  ></iframe>
+<!-- ══ KASQ ══ -->
+<div id="tab-kasq" class="tab-content">
+  <iframe id="kasq-frame" src="kasq_admin.html" title="KASQ 영유아 발달 선별검사"></iframe>
 </div>
 
 <script>
-  // ── 탭 전환 ──
+  function setHeights() {
+    const headerH = document.querySelector('header').offsetHeight;
+    const navH    = document.querySelector('.tab-nav').offsetHeight;
+    const h = window.innerHeight - headerH - navH;
+    document.getElementById('selsi-frame').style.height = h + 'px';
+    document.getElementById('kasq-frame').style.height  = h + 'px';
+  }
+
   function switchTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
-    if (id === 'tab-tab3' || id === 'tab-tab4') {
-      const frameId = id === 'tab-tab3' ? 'selsi-frame' : 'kasq-frame';
-      const frame = document.getElementById(frameId);
-      function setFrameHeight() {
-        const headerH = document.querySelector('header').offsetHeight;
-        const navH = document.querySelector('.tab-nav').offsetHeight;
-        frame.style.height = (window.innerHeight - headerH - navH) + 'px';
-      }
-      setFrameHeight();
-      window.addEventListener('resize', setFrameHeight);
-    }
   }
 
-  window.addEventListener('load', () => {
-    ['selsi-frame','kasq-frame'].forEach(fid => {
-      const frame = document.getElementById(fid);
-      if (frame) {
-        const headerH = document.querySelector('header').offsetHeight;
-        const navH = document.querySelector('.tab-nav').offsetHeight;
-        frame.style.height = (window.innerHeight - headerH - navH) + 'px';
-      }
-    });
-    initLinks();
-  });
-
-  // ── Supabase 설정 ──
-  const SB_URL = "https://algfzvbqxxvcaunlsrxd.supabase.co";
-  const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZ2Z6dmJxeHh2Y2F1bmxzcnhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MDM5MDQsImV4cCI6MjA5NDQ3OTkwNH0.lD9pIFoSw2lYY23zDMFbfeGvI0p_kcih61rScSh5a3s";
-
-  async function sbLinks(path, opts = {}) {
-    const res = await fetch(SB_URL + "/rest/v1/" + path, {
-      method: opts.method || "GET",
-      headers: {
-        "apikey": SB_KEY,
-        "Authorization": "Bearer " + SB_KEY,
-        "Content-Type": "application/json",
-        "Prefer": opts.prefer !== undefined ? opts.prefer : (opts.method === "POST" ? "return=representation" : "return=minimal")
-      },
-      body: opts.body ? JSON.stringify(opts.body) : undefined
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || res.statusText);
-    }
-    if (res.status === 204) return null;
-    return res.json();
-  }
-
-  // ── 링크 관리 ──
-  let _links = []; // { id, name, url, sort_order }
-
-  function getFavicon(url) {
-    try {
-      const u = new URL(url);
-      return `https://www.google.com/s2/favicons?sz=32&domain=${u.hostname}`;
-    } catch { return null; }
-  }
-
-  function renderSavedBar(links) {
-    const bar = document.getElementById('saved-links-bar');
-    const badge = document.getElementById('link-count-badge');
-    const valid = links.filter(l => l.name && l.url);
-    badge.textContent = valid.length + '개';
-    if (!valid.length) {
-      bar.innerHTML = '<span class="empty-links-msg">💡 아래에서 링크를 추가하면 여기에 바로가기가 생성됩니다</span>';
-      return;
-    }
-    bar.innerHTML = valid.map(l => {
-      const icon = getFavicon(l.url);
-      return `<a class="saved-link-chip" href="${l.url}" target="_blank">
-        <span class="chip-icon">${icon ? `<img src="${icon}" width="16" height="16" onerror="this.style.display='none';this.parentNode.textContent='🔗'">` : '🔗'}</span>
-        ${l.name}
-      </a>`;
-    }).join('');
-  }
-
-  function renderLinkRows(links) {
-    const container = document.getElementById('link-rows');
-    const rows = links.length ? links : [{name:'',url:''},{name:'',url:''},{name:'',url:''}];
-    container.innerHTML = rows.map((l, i) => `
-      <div class="link-row" data-id="${l.id || ''}">
-        <input type="text"  placeholder="이름 (예: 환자방문관리)" value="${(l.name||'').replace(/"/g,'&quot;')}">
-        <input type="url"   placeholder="URL (https://...)"       value="${(l.url ||'').replace(/"/g,'&quot;')}">
-        <button class="link-del-btn" onclick="this.parentNode.remove()" title="삭제">×</button>
-      </div>
-    `).join('');
-  }
-
-  function setStatus(msg, color) {
-    const el = document.getElementById('link-status');
-    if (!el) return;
-    el.textContent = msg;
-    el.style.color = color || 'var(--text-muted)';
-  }
-
-  async function initLinks() {
-    setStatus('🔄 불러오는 중...');
-    try {
-      const rows = await sbLinks("links?select=*&order=sort_order.asc,id.asc");
-      _links = rows || [];
-      renderSavedBar(_links);
-      renderLinkRows(_links);
-      setStatus(_links.length ? '' : '저장된 링크가 없습니다');
-    } catch(e) {
-      setStatus('⚠️ 불러오기 실패: ' + e.message, '#dc2626');
-      // fallback: 빈 행 3개
-      renderLinkRows([]);
-    }
-  }
-
-  function addLinkRow() {
-    const container = document.getElementById('link-rows');
-    const row = document.createElement('div');
-    row.className = 'link-row';
-    row.dataset.id = '';
-    row.innerHTML = `
-      <input type="text" placeholder="이름 (예: 환자방문관리)">
-      <input type="url"  placeholder="URL (https://...)">
-      <button class="link-del-btn" onclick="this.parentNode.remove()" title="삭제">×</button>
-    `;
-    container.appendChild(row);
-  }
-
-  async function saveLinks() {
-    const btn = document.querySelector('.link-save-btn');
-    btn.disabled = true;
-    btn.textContent = '저장 중...';
-    setStatus('🔄 저장 중...');
-
-    // 현재 행에서 데이터 수집
-    const rows = document.getElementById('link-rows').querySelectorAll('.link-row');
-    const newLinks = [];
-    rows.forEach((row, i) => {
-      const name = row.querySelector('input[type=text]').value.trim();
-      const url  = row.querySelector('input[type=url]').value.trim();
-      const id   = row.dataset.id || '';
-      if (name || url) newLinks.push({ id, name, url, sort_order: i });
-    });
-
-    try {
-      // 기존 전체 삭제 후 재삽입 (심플한 방식)
-      // 1. 기존 행 ID가 있는 것들 DELETE
-      const existingIds = _links.map(l => l.id).filter(Boolean);
-      if (existingIds.length) {
-        await sbLinks(`links?id=in.(${existingIds.join(',')})`, { method: 'DELETE', prefer: '' });
-      }
-      // 2. 새 데이터 INSERT
-      if (newLinks.length) {
-        const insertData = newLinks.map(({name, url, sort_order}) => ({name, url, sort_order}));
-        const inserted = await sbLinks('links', { method: 'POST', body: insertData });
-        _links = inserted || newLinks;
-      } else {
-        _links = [];
-      }
-
-      renderSavedBar(_links);
-      renderLinkRows(_links);
-      setStatus('✅ 저장 완료', '#16a34a');
-      btn.textContent = '✅ 저장됨';
-      btn.style.background = '#16a34a';
-      setTimeout(() => {
-        btn.textContent = '💾 저장';
-        btn.style.background = '';
-        btn.disabled = false;
-        setStatus('');
-      }, 1800);
-    } catch(e) {
-      setStatus('⚠️ 저장 실패: ' + e.message, '#dc2626');
-      btn.textContent = '💾 저장';
-      btn.disabled = false;
-    }
-  }
+  window.addEventListener('load', setHeights);
+  window.addEventListener('resize', setHeights);
 </script>
 </body>
 </html>
