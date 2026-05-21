@@ -839,7 +839,7 @@
           📏 신체계측
         </button>
         <button id="subtab-report-btn" onclick="switchReportSubtab('report')"
-          style="flex:1;padding:10px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:var(--slate-500);">
+          style="flex:1;padding:10px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:var(--slate-500);display:none;">
           📋 보고서
         </button>
       </div>
@@ -922,7 +922,7 @@
             <div id="meas-summary-content" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;"></div>
           </div>
 
-          <button onclick="applyMeasToReport()" style="margin-top:16px;width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+          <button onclick="applyMeasToReport()" style="display:none;margin-top:16px;width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
             ✅ 보고서에 적용하기 →
           </button>
         </div>
@@ -2724,7 +2724,7 @@ function renderSessionList() {
         <div class="session-meta">${s.child_age} · ${s.examiner || ""} · ${s.exam_date || ""}</div>
       </div>
       <span class="badge ${s.status === "completed" ? "badge-done" : "badge-pending"}">${s.status === "completed" ? "완료" : "진행중"}</span>
-      <button onclick="event.stopPropagation();deleteSession('${s.session_id}')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:700;">삭제</button>
+      <button onclick="event.stopPropagation();deleteSession('${s.session_id}')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:700;display:none;">삭제</button>
     </div>
   `).join("");
 }
@@ -3144,20 +3144,17 @@ let _currentReportSession = null;
 let _measData = {}; // { ht, wt, hc, bmi, ht_p, wt_p, hc_p, bmi_p }
 
 function switchReportSubtab(tab) {
-  const isMeas = tab === 'meas';
-  document.getElementById('subtab-meas').style.display = isMeas ? 'block' : 'none';
-  document.getElementById('subtab-report').style.display = isMeas ? 'none' : 'block';
+  // 접수실 버전: 신체계측 탭만 사용 가능
+  tab = 'meas';
+  const isMeas = true;
+  document.getElementById('subtab-meas').style.display = 'block';
+  document.getElementById('subtab-report').style.display = 'none';
   // 버튼 스타일
   const measBtn = document.getElementById('subtab-meas-btn');
-  const repBtn  = document.getElementById('subtab-report-btn');
-  measBtn.style.background = isMeas ? 'var(--primary)' : 'transparent';
-  measBtn.style.color      = isMeas ? 'white' : 'var(--slate-500)';
-  measBtn.style.boxShadow  = isMeas ? '0 2px 6px rgba(13,148,136,0.3)' : 'none';
-  repBtn.style.background  = !isMeas ? 'var(--primary)' : 'transparent';
-  repBtn.style.color       = !isMeas ? 'white' : 'var(--slate-500)';
-  repBtn.style.boxShadow   = !isMeas ? '0 2px 6px rgba(13,148,136,0.3)' : 'none';
-  // 보고서 탭엔 인쇄버튼 보여주기
-  document.getElementById('report-print-btn').style.display = isMeas ? 'none' : 'inline-flex';
+  measBtn.style.background = 'var(--primary)';
+  measBtn.style.color      = 'white';
+  measBtn.style.boxShadow  = '0 2px 6px rgba(13,148,136,0.3)';
+  document.getElementById('report-print-btn').style.display = 'none';
 }
 
 function openReportForm(session) {
