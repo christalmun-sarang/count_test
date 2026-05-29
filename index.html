@@ -125,9 +125,15 @@
 
 <!-- ── TAB NAV ── -->
 <nav class="tab-nav">
+  <button class="tab-btn" onclick="switchTab('tab-messenger', this)">💬 메신저</button>
   <button class="tab-btn active" onclick="switchTab('tab-selsi', this)">🧒 SELSI 검사</button>
   <button class="tab-btn" onclick="switchTab('tab-kasq', this)">🌱 KASQ 검사</button>
 </nav>
+
+<!-- ══ MESSENGER ══ -->
+<div id="tab-messenger" class="tab-content">
+  <iframe id="messenger-frame" src="messenger.html" title="메신저" allow="microphone; camera"></iframe>
+</div>
 
 <!-- ══ SELSI ══ -->
 <div id="tab-selsi" class="tab-content active">
@@ -146,6 +152,7 @@
     const h = window.innerHeight - headerH - navH;
     document.getElementById('selsi-frame').style.height = h + 'px';
     document.getElementById('kasq-frame').style.height  = h + 'px';
+    document.getElementById('messenger-frame').style.height = h + 'px';
   }
 
   function switchTab(id, btn) {
