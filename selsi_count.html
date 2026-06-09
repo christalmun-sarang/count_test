@@ -1707,6 +1707,7 @@ async function saveDirectExamResult(sc) {
   state.currentSessionId = sessionId;
 
   const age = getAge();
+  // ※ score_r/e, equiv_r/e 컬럼은 테이블에 없으므로 제외
   const payload = {
     session_id:   sessionId,
     child_name:   state.childName,
@@ -1716,17 +1717,17 @@ async function saveDirectExamResult(sc) {
     exam_date:    state.examDate || new Date().toISOString().split("T")[0],
     status:       "completed",
     answers:      state.answers,
-    completed_at: new Date().toISOString(),
-    score_r:      sc ? sc.r.score : null,
-    score_e:      sc ? sc.e.score : null,
-    equiv_r:      sc ? sc.r.equiv : null,
-    equiv_e:      sc ? sc.e.equiv : null
+    completed_at: new Date().toISOString()
   };
 
   try {
     await sbFetch("selsi_sessions", { method: "POST", body: payload });
+    console.log("직접 검사 결과 저장 완료:", sessionId);
   } catch(e) {
-    console.warn("결과 자동 저장 실패:", e.message);
+    console.error("결과 저장 실패:", e.message);
+    // 저장 실패 시 ID 초기화 → 재시도 가능하도록
+    state.currentSessionId = null;
+    alert("⚠️ 결과 저장에 실패했습니다.\n오류: " + e.message + "\n\n결과 조회 탭에서 확인되지 않으면 관리자에게 문의하세요.");
   }
 }
 
